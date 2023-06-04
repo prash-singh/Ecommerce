@@ -1,18 +1,17 @@
 package com.project.ecommerce.orders.entities;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.persistence.*;
+import lombok.Data;
 
-@RestController
+@Entity
+@Data
+@Table(name = "shop_order")
 public class Order {
-    @GetMapping("/orders")
-    public String orders(){
-        return "Orders";
-    }
+    @Id
+    @Column(name = "order_id")
+    private String id;
 
-    @GetMapping("/orders/{id}")
-    public String getById(@PathVariable String id){
-        return id;
-    }
+    @Column(name = "order_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private String timestamp;
 }
