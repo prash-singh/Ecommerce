@@ -18,4 +18,14 @@ public class Warehouseserviceimpl implements Warehouseservice{
     public List<Warehouse> Getallwarehouse(){
         return this.warehousedao.findAll();
     }
+
+    public String Getquantity(Long id){
+        Warehouse warehouse= warehousedao.findById(id).get();
+        String ans="The Quantity at " + warehouse.getLocation()+" Warehouse is "+ warehouse.getAvailablestock();
+        return ans;
+    }
+
+    public void Deletewarehouse(Long id){
+        warehousedao.delete(warehousedao.findById(id).get());
+    }
 }

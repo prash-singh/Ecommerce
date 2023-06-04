@@ -9,4 +9,8 @@ public interface Warehouseservice {
     public Warehouse Addnewwarehouse(Warehouse warehouse);
 
     public List<Warehouse> Getallwarehouse();
+
+    public String Getquantity(Long id);
+
+    public void Deletewarehouse(Long id);
 }
