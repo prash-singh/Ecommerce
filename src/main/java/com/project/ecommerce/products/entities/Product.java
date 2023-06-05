@@ -1,9 +1,6 @@
 package com.project.ecommerce.products.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -14,11 +11,10 @@ public class Product {
     private long id;
     private String  name;
     private String description ;
-    private String product_image;
-    private long product_price;
+    @Column(name = "product_price")
+    private long productPrice;
     private String size;
     private String colour;
-
     private String brand;
     private long availQuantity;
     private long warehouseStock;
