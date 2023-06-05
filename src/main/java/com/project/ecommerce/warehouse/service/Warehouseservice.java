@@ -6,11 +6,13 @@ import java.util.List;
 
 public interface Warehouseservice {
 
-    public Warehouse Addnewwarehouse(Warehouse warehouse);
+    public Warehouse addnewwarehouseimpl(Warehouse warehouse);
 
-    public List<Warehouse> Getallwarehouse();
+    public List<Warehouse> getallwarehouseimpl();
 
-    public String Getquantity(Long id);
+    public String getquantityimpl(Long id);
 
-    public void Deletewarehouse(Long id);
+    public void deletewarehouseimpl(Long id);
+
+    public String addstockimpl(Long id,Long stock);
 }

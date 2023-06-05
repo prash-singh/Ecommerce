@@ -11,21 +11,37 @@ import java.util.List;
 public class Warehouseserviceimpl implements Warehouseservice{
     @Autowired
     private Warehousedao warehousedao;
-    public Warehouse Addnewwarehouse(Warehouse warehouse){
+    public Warehouse addnewwarehouseimpl(Warehouse warehouse){
         return warehousedao.save(warehouse);
     }
 
-    public List<Warehouse> Getallwarehouse(){
+    public List<Warehouse> getallwarehouseimpl(){
         return this.warehousedao.findAll();
     }
 
-    public String Getquantity(Long id){
+    public String getquantityimpl(Long id){
         Warehouse warehouse= warehousedao.findById(id).get();
-        String ans="The Quantity at " + warehouse.getLocation()+" Warehouse is "+ warehouse.getAvailablestock();
-        return ans;
+        return "The Quantity at " + warehouse.getLocation()+" Warehouse is "+ warehouse.getAvailablestock();
+
     }
 
-    public void Deletewarehouse(Long id){
+    public void deletewarehouseimpl(Long id){
         warehousedao.delete(warehousedao.findById(id).get());
+    }
+
+    public String addstockimpl(Long id,Long stock){
+        Warehouse warehouse= warehousedao.findById(id).get();
+        Long available= warehouse.getWarehousecapacity()-warehouse.getAvailablestock();
+
+        if(stock<=available){
+            warehouse.setAvailablestock(warehouse.getAvailablestock()+stock);
+            warehousedao.save(warehouse);
+            return "the avilable stock at " + warehouse.getName() + "warehouse is " + warehouse.getAvailablestock();
+        }
+        return "Sufficient space not avilable in " + warehouse.getName()+ " warehouse";
+
+
+
+
     }
 }
