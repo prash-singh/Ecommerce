@@ -19,7 +19,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/{id}")
-    public Product getProduct(@PathVariable long id){
+    public Product getProduct(@PathVariable String  id){
         return this.productservices.getProduct(id);
     }
     @PostMapping("/product/")
@@ -27,11 +27,11 @@ public class ProductController {
         return  this.productservices.addProduct(product);
     }
     @PutMapping("/product/{id}")
-    public Product updateProduct(@PathVariable long id){
+    public Product updateProduct(@PathVariable String  id){
         return this.productservices.updateProduct(id);
     }
     @DeleteMapping("/product/{id}")
-    public Product deleteProduct(@PathVariable long id){
+    public Product deleteProduct(@PathVariable String  id){
         return this.productservices.deleteProduct(id);
     }
 

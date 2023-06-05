@@ -20,8 +20,8 @@ public class ProductServicesImp implements ProductServices{
 
 
     @Override
-    public Product getProduct(long id) {
-        return productRepo.findById(id).get();
+    public Product getProduct(String  id) {
+        return productRepo.findById(Long.valueOf(id)).get();
     }
 
     @Override
@@ -30,17 +30,17 @@ public class ProductServicesImp implements ProductServices{
     }
 
     @Override
-    public Product updateProduct(long id) {
-        Product product= productRepo.findById(id).get();
+    public Product updateProduct(String  id) {
+        Product product= productRepo.findById(Long.valueOf(id)).get();
         product.setName("yutr");
         productRepo.save(product);
         return  product;
     }
 
     @Override
-    public Product deleteProduct(long id) {
-        Product product = productRepo.findById(id).get();
-        productRepo.deleteById(id);
+    public Product deleteProduct(String  id) {
+        Product product = productRepo.findById(Long.valueOf(id)).get();
+        productRepo.deleteById(Long.valueOf(id));
         return product;
     }
 

@@ -1,10 +1,9 @@
 package com.project.ecommerce.products.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -13,5 +12,7 @@ public class ProductCatogery {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long category_id;
     private String name;
-    private long productId ;
+    @OneToMany
+    @JoinColumn(name = "category_id")
+    private List<Product> products;
 }
