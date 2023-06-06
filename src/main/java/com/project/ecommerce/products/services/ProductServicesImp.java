@@ -1,5 +1,5 @@
 package com.project.ecommerce.products.services;
-import com.project.ecommerce.products.repositiry.ProductRepo;
+import com.project.ecommerce.products.repository.ProductRepo;
 import com.project.ecommerce.products.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
