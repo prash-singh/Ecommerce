@@ -10,10 +10,10 @@ import java.util.List;
 public class ProductCatogery {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "category_id")
-    private long categoryId;
+    private long category_id;
     private String name;
-    @OneToMany
-    @JoinColumn(name = "categoryId")
+
+    @OneToMany(cascade = CascadeType.ALL, targetEntity = Product.class)
+    @JoinColumn(name = "Category_id")
     private List<Product> products;
 }

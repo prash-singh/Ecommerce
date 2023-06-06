@@ -32,6 +32,10 @@ public class CustomerServiceimpl{
         customerRepository.deleteAll();
     }
 
+    public String addCustomer(CustomerEntity customer){
+
+        return "wfds";
+    }
 
 }
 
