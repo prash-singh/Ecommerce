@@ -1,11 +1,33 @@
 package com.project.ecommerce.customer.service;
 
+import com.project.ecommerce.customer.entity.CustomerEntity;
+import com.project.ecommerce.customer.repo.CustomerRepository;
 import com.project.ecommerce.warehouse.service.Warehouseservice;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CustomerServiceimpl implements CustomerImplements{
+    @Autowired
+    CustomerRepository customerRepository;
+    @Override
+    public String addCustomer(CustomerEntity customer) {
 
+        try{
+            customerRepository.save(customer);
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage().toString());
+            return new String("failed");
+        }
+        return new String("success");
+
+
+//        CustomerEntity customerData  = new CustomerEntity();
+//        String username=customer.getUsername();
+//        String emailId = customer.getEmailId();
+//        String password = customer.getPassword();
+    }
 }
 
 

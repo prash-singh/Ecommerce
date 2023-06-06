@@ -22,7 +22,7 @@ public class CustomerEntity {
     private String emailId;
 
     @Column(name="phone_number")
-    private String phoneNumber;
+    private Long phoneNumber;
 
     @Column(name="password")
     private String password;
