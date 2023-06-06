@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-public class CustomerServiceimpl{
+public class CustomerServiceimpl implements CustomerImplements{
     @Autowired
     private CustomerRepository customerRepository;
     public List<CustomerEntity> findAll(){
@@ -33,6 +33,10 @@ public class CustomerServiceimpl{
     }
 
 
+    public String addCustomer(CustomerEntity customerEntity) {
+        this.customerRepository.save(customerEntity);
+        return "Added";
+    }
 }
 
 
