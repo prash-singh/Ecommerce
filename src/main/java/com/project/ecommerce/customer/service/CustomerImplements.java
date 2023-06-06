@@ -1,12 +1,9 @@
 package com.project.ecommerce.customer.service;
 
-import com.project.ecommerce.customer.entity.AddressEntity;
-import com.project.ecommerce.customer.entity.CustomerEntity;
-
-import java.util.List;
+import com.project.ecommerce.customer.entities.CustomerEntities;
 
 public interface CustomerImplements {
-    String addCustomer(CustomerEntity customer);
+    String addCustomer(CustomerEntities customer);
 
 //    String updateCustomer(CustomerEntity customer);
 //

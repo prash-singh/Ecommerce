@@ -1,11 +1,9 @@
 package com.project.ecommerce.customer.controller;
 
-
-import com.project.ecommerce.customer.entity.CustomerEntity;
+import com.project.ecommerce.customer.entities.CustomerEntities;
 import com.project.ecommerce.customer.service.CustomerImplements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,53 +13,58 @@ public class CustomerController {
     private CustomerImplements customerService;
 
     @PostMapping("/signup")
-    public String addCustomer(@RequestBody CustomerEntity customerEntity)
-    {
-        return this.customerService.addCustomer(customerEntity);
+    public String addCustomer(@RequestBody CustomerEntities customerEntities) {
+        return this.customerService.addCustomer(customerEntities);
     }
 
     @GetMapping("/login")
-    public CustomerEntity findAllCustomer(@RequestBody CustomerEntity a) {
+    public CustomerEntities findAllCustomer(@RequestBody CustomerEntities a) {
         return a;
     }
 
-
-
     @GetMapping("/customer")
-    public List<CustomerEntity> findAllCustomer() {
+    public List<CustomerEntities> findAllCustomer() {
         return new ArrayList<>();
     }
+
     @PutMapping("/customer")
-    public List<CustomerEntity> updateCustomer(@RequestBody CustomerEntity a) {
+    public List<CustomerEntities> updateCustomer(@RequestBody CustomerEntities a) {
         return new ArrayList<>();
     }
 
     @GetMapping("/customer/{id}")
-    public CustomerEntity findCustomerById(@PathVariable("id") int id) {
-        return new CustomerEntity();
-
+    public CustomerEntities findCustomerById(@PathVariable("id") int id) {
+        return new CustomerEntities();
     }
+
     @GetMapping("/address/{id}")
-    public CustomerEntity findAddressById(@PathVariable("id") int id) {
-        return new CustomerEntity();
+    public CustomerEntities findAddressById(@PathVariable("id") int id) {
+        return new CustomerEntities();
     }
+
     @GetMapping("/address")
-    public List<CustomerEntity> findAddress() {
+    public List<CustomerEntities> findAddress() {
         return new ArrayList<>();
     }
+
     @PutMapping("/address")
-    public List<CustomerEntity> updateAddress(@RequestBody CustomerEntity a) {
+    public List<CustomerEntities> updateAddress(@RequestBody CustomerEntities a) {
         return new ArrayList<>();
     }
+
     @DeleteMapping("/address/{id}")
-    public List<CustomerEntity> deleteAddress(@PathVariable("id") int id) {
+    public List<CustomerEntities> deleteAddress(@PathVariable("id") int id) {
         return new ArrayList<>();
     }
+
     @PostMapping("/address")
-    public List<CustomerEntity> addAddress(@RequestBody CustomerEntity a) {
+    public List<CustomerEntities> addAddress(@RequestBody CustomerEntities a) {
         return new ArrayList<>();
     }
 
-
+    @DeleteMapping("/address")
+    public List<CustomerEntities> deleteAddress(@RequestBody CustomerEntities a) {
+        return new ArrayList<>();
+    }
 }
 
