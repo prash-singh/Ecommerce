@@ -1,5 +1,5 @@
 package com.project.ecommerce.products.services;
-import com.project.ecommerce.products.Repositiry.ProductRepo;
+import com.project.ecommerce.products.repositiry.ProductRepo;
 import com.project.ecommerce.products.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class ProductServicesImp implements ProductServices{
 
     @Override
     public Product getProduct(String  id) {
-        return productRepo.findById(Long.valueOf(id)).get();
+        return productRepo.findById(id).get();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ProductServicesImp implements ProductServices{
 
     @Override
     public Product updateProduct(String  id) {
-        Product product= productRepo.findById(Long.valueOf(id)).get();
+        Product product= productRepo.findById(id).get();
         product.setName("yutr");
         productRepo.save(product);
         return  product;
@@ -39,8 +39,8 @@ public class ProductServicesImp implements ProductServices{
 
     @Override
     public Product deleteProduct(String  id) {
-        Product product = productRepo.findById(Long.valueOf(id)).get();
-        productRepo.deleteById(Long.valueOf(id));
+        Product product = productRepo.findById(id).get();
+        productRepo.deleteById(id);
         return product;
     }
 
