@@ -34,6 +34,10 @@ public class ProductController {
     public Product deleteProduct(@PathVariable String  id){
         return this.productservices.deleteProduct(id);
     }
+    @GetMapping("/products/{name}")
+    public Product getProductName(@PathVariable String name){
+        return this.productservices.getProductName(name);
+    }
 
 
 

@@ -9,10 +9,10 @@ public interface ProductServices {
     public List<Product> getProducts();
 
     public Product getProduct(String id);
-
     public Product addProduct(Product product);
     public Product updateProduct(String id);
     public Product deleteProduct(String id);
+    public Product getProductName(String name);
 
 
 }

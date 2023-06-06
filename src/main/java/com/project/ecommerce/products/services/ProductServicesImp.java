@@ -42,6 +42,11 @@ public class ProductServicesImp implements ProductServices{
         return product;
     }
 
+    @Override
+    public Product getProductName(String name) {
+        return  productRepo.findByName(name);
+    }
+
 
 }
 
