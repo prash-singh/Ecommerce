@@ -18,11 +18,11 @@ AddressEntity updateAddress(AddressEntity customer);
 AddressEntity deleteAddress(AddressEntity customer);
 
 
-    public List<CustomerEntity> findAll();
+    List<CustomerEntity> findAll();
 
     void deleteById(String id);
 
     void delete(CustomerEntity customerEntity);
 
-
+    CustomerEntity addCustomer(Customer customer);
 }
