@@ -10,9 +10,10 @@ import java.util.List;
 public class ProductCatogery {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long category_id;
+    @Column(name = "category_id")
+    private long categoryId;
     private String name;
     @OneToMany
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "categoryId")
     private List<Product> products;
 }
