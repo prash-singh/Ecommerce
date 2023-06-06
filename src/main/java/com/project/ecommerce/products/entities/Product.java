@@ -3,6 +3,8 @@ package com.project.ecommerce.products.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 public class Product {
@@ -18,5 +20,7 @@ public class Product {
     private String brand;
     private long availQuantity;
     private long warehouseStock;
+
+
 
 }

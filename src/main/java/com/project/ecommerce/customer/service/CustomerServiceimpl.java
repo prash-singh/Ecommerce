@@ -29,6 +29,10 @@ public class CustomerServiceimpl implements CustomerImplements{
         customerRepository.deleteAll();
     }
 
+    public String addCustomer(CustomerEntity customer){
+
+        return "wfds";
+    }
 
     public String addCustomer(CustomerEntities customerEntity) {
         this.customerRepository.save(customerEntity);
