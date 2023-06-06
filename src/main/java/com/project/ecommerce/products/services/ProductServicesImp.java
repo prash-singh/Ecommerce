@@ -17,8 +17,6 @@ public class ProductServicesImp implements ProductServices{
         return productRepo.findAll();
     }
 
-
-
     @Override
     public Product getProduct(String  id) {
         return productRepo.findById(id).get();

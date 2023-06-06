@@ -13,7 +13,8 @@ public class Cart {
     @Column(name = "cart_id")
     private String id;
 
-    @Column(name = "user_id")
+//    @OneToOne(cascade = CascadeType.ALL)
+    @Column(name = "fk_user_id")
     private String userId;
 
     @OneToMany(cascade = CascadeType.ALL)
