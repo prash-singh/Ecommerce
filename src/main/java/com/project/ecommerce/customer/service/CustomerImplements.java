@@ -1,12 +1,14 @@
 package com.project.ecommerce.customer.service;
 
-import com.project.ecommerce.customer.entity.AddressEntity;
-import com.project.ecommerce.customer.entity.CustomerEntity;
+import com.project.ecommerce.customer.entities.AddressEntities;
+import com.project.ecommerce.customer.entities.CustomerEntities;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+@Service
 
 public interface CustomerImplements {
-    String addCustomer(CustomerEntity customer);
+    String addCustomer(CustomerEntities customer);
 
 //    String updateCustomer(CustomerEntity customer);
 //

@@ -61,7 +61,6 @@ public class CustomerController {
     public List<CustomerEntities> addAddress(@RequestBody CustomerEntities a) {
         return new ArrayList<>();
     }
-
     @DeleteMapping("/address")
     public List<CustomerEntities> deleteAddress(@RequestBody CustomerEntities a) {
         return new ArrayList<>();
