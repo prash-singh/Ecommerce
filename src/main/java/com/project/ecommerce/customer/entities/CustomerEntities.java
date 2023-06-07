@@ -1,15 +1,13 @@
-package com.project.ecommerce.customer.entity;
+package com.project.ecommerce.customer.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.List;
-
 @Entity
 @Data
 @Table(name ="Customer_user")
 
-public class CustomerEntity {
+public class CustomerEntities {
     @Id
     @Column(name="customer_id")
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,6 +27,6 @@ public class CustomerEntity {
 
     @JoinColumn(name= "fk_customer_address_id")
     @OneToMany(cascade = CascadeType.ALL)
-    private List<AddressEntity> address;
+    private List<AddressEntities> address;
 }
 

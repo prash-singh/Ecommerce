@@ -1,28 +1,36 @@
 package com.project.ecommerce.customer.service;
 
-import com.project.ecommerce.customer.entity.AddressEntity;
-import com.project.ecommerce.customer.entity.CustomerEntity;
+import com.project.ecommerce.customer.entities.AddressEntities;
+import com.project.ecommerce.customer.entities.CustomerEntities;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+@Service
 
-public interface CustomerImplements{
-String  addCustomer(CustomerEntity customer);
-String  updateCustomer(CustomerEntity customer);
-String  deleteCustomer(CustomerEntity customer);
-CustomerEntity getCustomer(CustomerEntity customer);
-CustomerEntity getCustomerById(CustomerEntity customer);
+public interface CustomerImplements {
+    String addCustomer(CustomerEntities customer);
 
-AddressEntity getAddress(AddressEntity  customer);
-AddressEntity getAddressById(AddressEntity  customer);
-AddressEntity updateAddress(AddressEntity customer);
-AddressEntity deleteAddress(AddressEntity customer);
+//    String updateCustomer(CustomerEntity customer);
+//
+//    String deleteCustomer(CustomerEntity customer);
+//
+//    CustomerEntity getCustomer(CustomerEntity customer);
+//
+//    CustomerEntity getCustomerById(CustomerEntity customer);
+//
+//    AddressEntity getAddress(AddressEntity customer);
+//
+//    AddressEntity getAddressById(AddressEntity customer);
+//
+//    AddressEntity updateAddress(AddressEntity customer);
+//
+//    AddressEntity deleteAddress(AddressEntity customer);
+//
+//
+//    List<CustomerEntity> findAll();
+//
+//    void deleteById(String id);
+//
+//    void delete(CustomerEntity customerEntity);
 
-
-    List<CustomerEntity> findAll();
-
-    void deleteById(String id);
-
-    void delete(CustomerEntity customerEntity);
-
-    CustomerEntity addCustomer(Customer customer);
 }
