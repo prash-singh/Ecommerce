@@ -12,7 +12,6 @@ public class Order {
     @Column(name = "order_id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
     @Column(name = "customer_id")
     private String customerId;
 
@@ -27,6 +26,8 @@ public class Order {
 
     @Column(name = "order_status")
     private boolean orderStatus;
+
+
 
     @JoinColumn(name = "fk_shop_order_id")
     @OneToMany(cascade = CascadeType.ALL)

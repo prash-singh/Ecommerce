@@ -5,7 +5,7 @@ import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.orders.entities.OrderItems;
 import com.project.ecommerce.orders.repository.OrderRepository;
 import com.project.ecommerce.products.entities.Product;
-import com.project.ecommerce.products.repositiry.ProductRepo;
+import com.project.ecommerce.products.repository.ProductRepo;
 import com.project.ecommerce.warehouse.repository.Warehousedao;
 import com.project.ecommerce.warehouse.entities.Warehouse;
 import org.springframework.beans.factory.annotation.Autowired;
