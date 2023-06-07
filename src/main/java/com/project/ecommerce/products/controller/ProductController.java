@@ -1,6 +1,9 @@
 package com.project.ecommerce.products.controller;
 
+
+import com.project.ecommerce.Constants;
 import com.project.ecommerce.products.services.ProductServices;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,7 @@ public class ProductController {
     @Autowired
     private ProductServices productservices;
 
-    @GetMapping("/product")
+    @GetMapping(Constants.GET_ALL_PRODUCT)
     public ResponseEntity<List<Product>> getProducts(){
         List<Product> list = this.productservices.getProducts();
         if(list.isEmpty() ){
@@ -26,23 +29,23 @@ public class ProductController {
         return ResponseEntity.of(Optional.of(list));
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping(Constants.GET_ONE_PRODUCT)
     public Product getProduct(@PathVariable String  id){
         return this.productservices.getProduct(id);
     }
-    @PostMapping("/product")
+    @PostMapping(Constants.ADD_PRODUCT)
     public Product addProduct(@RequestBody Product product){
         return  this.productservices.addProduct(product);
     }
-    @PutMapping("/product/{id}")
+    @PutMapping(Constants.UPDATE_PRODUCT)
     public Product updateProduct(@PathVariable String  id){
         return this.productservices.updateProduct(id);
     }
-    @DeleteMapping("/product/{id}")
+    @DeleteMapping(Constants.DELETE_PRODUCT)
     public Product deleteProduct(@PathVariable String  id){
         return this.productservices.deleteProduct(id);
     }
-    @GetMapping("/products/{name}")
+    @GetMapping(Constants.GET_PRODUCT_NAME)
     public Product getProductName(@PathVariable String name){
         return this.productservices.getProductName(name);
     }

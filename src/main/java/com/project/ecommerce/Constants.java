@@ -12,6 +12,12 @@ public class Constants {
 
     public static final String DELETE_PRODUCT="/product/{id}";
 
-    public static final String GET_PRODUCT_NAME="/products/{name}";
+
+
+    public static final String GET_PRODUCT_NAME="/product/products/productss/{name}";
+
+    public static final String GET_ALL_CATOGERYES="/allcategories";
+    public static final String GET_CATOGERY_NAME="/category/{name}";
+
 
 }
