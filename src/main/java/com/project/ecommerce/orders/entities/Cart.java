@@ -14,8 +14,8 @@ public class Cart {
     private String id;
 
 //    @OneToOne(cascade = CascadeType.ALL)
-    @Column(name = "fk_user_id")
-    private String userId;
+    @Column(name = "fk_customer_id")
+    private String customerId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_cart_id")

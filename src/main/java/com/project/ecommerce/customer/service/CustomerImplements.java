@@ -5,11 +5,8 @@ import com.project.ecommerce.customer.entities.CustomerEntities;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-
 public interface CustomerImplements {
     String addCustomer(CustomerEntities customer);
-}
 
 //    String updateCustomer(CustomerEntity customer);
 //
@@ -34,4 +31,4 @@ public interface CustomerImplements {
 //
 //    void delete(CustomerEntity customerEntity);
 
-
+}
