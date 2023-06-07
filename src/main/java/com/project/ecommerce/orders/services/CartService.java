@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface CartService {
     public List<Cart> getCart();
+    public Cart getByUserId(String userId);
     public void addCart(CartDTO c);
-
 }

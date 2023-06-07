@@ -2,11 +2,14 @@ package com.project.ecommerce.customer.repository;
 
 import com.project.ecommerce.customer.entities.CustomerEntities;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public  interface CustomerRepository extends JpaRepository<CustomerEntities,String> {
-    CustomerEntities findByEmail(String email);
+    @Query("Select c from CustomerEntities c where c.emailId =:email")
+    CustomerEntities findByEmail(@Param("email") String email);
 }
 
 
