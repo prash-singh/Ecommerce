@@ -5,10 +5,22 @@ import com.project.ecommerce.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-
+@Service
 public class CustomerServiceimpl implements CustomerImplements{
     @Autowired
    private CustomerRepository customerRepository;
+    @Override
+    public String addCustomer(CustomerEntities customerEntity) {
+        String emailId = customerEntity.getEmailId();
+        CustomerEntities customerData = customerRepository.findByEmail(emailId);
+        if (customerData!= null) {
+            return "Email Id already exists";
+        }
+        customerRepository.save(customerEntity);
+        return "Customer Added Successfully";
+    }
+}
+
 //    public List<CustomerEntities> findAll() { return customerRepository.findAll();
 //    }
 //    public CustomerEntities findById(String id){
@@ -33,17 +45,6 @@ public class CustomerServiceimpl implements CustomerImplements{
 //
 //        return "wfds";
 //    }
-    @Override
-    public String addCustomer(CustomerEntities customerEntity) {
-        String emailId = customerEntity.getEmailId();
-        CustomerEntities customerData = customerRepository.findByEmail(emailId);
-        if (customerData!= null) {
-            return "Email Id already exists";
-        }
-        customerRepository.save(customerEntity);
-        return "Customer Added Successfully";
-    }
-}
 
 
 
