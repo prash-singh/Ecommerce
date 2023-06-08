@@ -44,6 +44,9 @@ public class CustomerServiceimpl implements CustomerImplements{
         customerRepository.save(customerEntity);
         return "Customer Added Successfully";
     }
+    public  CustomerEntities getcustomerbyid(String id){
+        return new CustomerEntities();
+    }
 }
 
 

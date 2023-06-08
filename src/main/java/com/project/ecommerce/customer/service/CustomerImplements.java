@@ -14,7 +14,7 @@ public interface CustomerImplements {
 //
 //    CustomerEntity getCustomer(CustomerEntity customer);
 //
-//    CustomerEntity getCustomerById(CustomerEntity customer);
+  //CustomerEntity getCustomerById(CustomerEntity customer);
 //
 //    AddressEntity getAddress(AddressEntity customer);
 //
@@ -30,5 +30,6 @@ public interface CustomerImplements {
 //    void deleteById(String id);
 //
 //    void delete(CustomerEntity customerEntity);
+    CustomerEntities getcustomerbyid(String id);
 
 }
