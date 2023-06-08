@@ -10,12 +10,16 @@ public interface ProductServices {
     public List<Product> getProducts();
 
     public Product getProduct(String id);
-    public Product addProduct(Product product);
-    public Product updateProduct(String id);
+    public String addProduct(Product product, Long wareHouseID);
+    public String updateProduct(String id);
     public Product deleteProduct(String id);
     public Product getProductName(String name);
 
    public List<ProductCatogery> getCatogeryType(String name);
+
+    public List<ProductCatogery> getCatogery();
+
+    //public List<Product> getProductByPage(int pageNo);
 
 
 }
