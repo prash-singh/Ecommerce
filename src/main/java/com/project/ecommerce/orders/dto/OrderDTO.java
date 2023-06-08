@@ -6,6 +6,5 @@ import lombok.Data;
 @Data
 public class OrderDTO {
     private String customerId;
-    private AddressEntities shippingAddress;
-//    private String shippingAddress;
+    private String shippingAddress;
 }
