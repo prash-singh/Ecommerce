@@ -3,7 +3,8 @@ package com.project.ecommerce.products.controller;
 
 import com.project.ecommerce.Constants;
 import com.project.ecommerce.products.services.ProductServices;
-import org.apache.tomcat.util.bcel.classfile.Constant;
+import com.project.ecommerce.warehouse.entities.Warehouse;
+import com.project.ecommerce.warehouse.repository.Warehousedao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ public class ProductController {
     @Autowired
     private ProductServices productservices;
 
+    @Autowired
+    private Warehousedao warehousedao;
+
     @GetMapping(Constants.GET_ALL_PRODUCT)
     public ResponseEntity<List<Product>> getProducts(){
         List<Product> list = this.productservices.getProducts();
@@ -33,12 +37,19 @@ public class ProductController {
     public Product getProduct(@PathVariable String  id){
         return this.productservices.getProduct(id);
     }
+    @GetMapping("/productPage/{pageNp}")
+
+//    public List<Product> getProductByPage(@PathVariable int pageNo){
+//        return this.productservices.getProductByPage(pageNo);
+//
+//    }
     @PostMapping(Constants.ADD_PRODUCT)
-    public Product addProduct(@RequestBody Product product){
-        return  this.productservices.addProduct(product);
+    public String addProduct(@RequestBody Product product, @PathVariable Long warehouseId){
+
+         return  this.productservices.addProduct(product,warehouseId);
     }
     @PutMapping(Constants.UPDATE_PRODUCT)
-    public Product updateProduct(@PathVariable String  id){
+    public String updateProduct(@PathVariable String  id){
         return this.productservices.updateProduct(id);
     }
     @DeleteMapping(Constants.DELETE_PRODUCT)
