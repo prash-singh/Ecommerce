@@ -16,15 +16,21 @@ public interface Warehouseservice {
 
     public void deletewarehouseimpl(Long id);
 
-    public String addstockimpl(Long id,Long stock);
+    public String addstockimpl(String productid,Long stock);
 
     //update product
     //update warehouse stock
 
 
-    public Product Updateproduct(Order order);
+    public String Updateproduct(Order order);
 
     public String updateprofit(Order order);
+
+    public String findwarehousefromproduct(String id);
+
+    public String updateavailablequantity();
+
+
 
 
 

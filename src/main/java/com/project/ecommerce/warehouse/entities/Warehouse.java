@@ -22,15 +22,17 @@ public class Warehouse {
 
     private String location;
 
-    private Long warehousecapacity;
+    private Long warehouseCapacity;
 
 
-    private Long availablestock;
+    private Long availableStock;
 
-    private double Overall_sell_warehouse;
+    private double overallSellWarehouse;
+
+    private Long totalQuantitySell;
 
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @OneToMany(cascade = { CascadeType.ALL })
    @JoinColumn(name = "warehouse_id")
     private List<Product> products;
 }

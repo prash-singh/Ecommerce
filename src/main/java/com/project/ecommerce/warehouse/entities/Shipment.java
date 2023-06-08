@@ -20,9 +20,9 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String shipmentId;
 
-    private Long originwarehouseId;
+    private Long originwareHouseId;
 
-    private Long destinationwarehouseId;
+    private Long destinationWarehouseId;
     @OneToMany
     @JoinColumn(name = "shipmentId")
     private List<Order> Orders;

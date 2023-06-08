@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -43,7 +42,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     public String getquantityimpl(Long id) {
         Warehouse warehouse = warehousedao.findById(id).get();
-        return "The Quantity at " + warehouse.getLocation() + " Warehouse is " + warehouse.getAvailablestock();
+        return "The Quantity at " + warehouse.getLocation() + " Warehouse is " + warehouse.getAvailableStock();
 
     }
 
@@ -51,68 +50,111 @@ public class Warehouseserviceimpl implements Warehouseservice {
         warehousedao.delete(warehousedao.findById(id).get());
     }
 
-    public String addstockimpl(Long id, Long stock) {
-        Warehouse warehouse = warehousedao.findById(id).get();
-        Long available = warehouse.getWarehousecapacity() - warehouse.getAvailablestock();
+    public String addstockimpl(String productid, Long stock)
+    {
+        List<Product> products = productdao.findAll();
+        for (Product product1 : products)
+        {
+            if (product1.getId().equals(productid))
+            {
 
-        if (stock <= available) {
-            warehouse.setAvailablestock(warehouse.getAvailablestock() + stock);
-            warehousedao.save(warehouse);
-            return "the avilable stock at " + warehouse.getName() + "warehouse is " + warehouse.getAvailablestock();
+                String warehouseid = findwarehousefromproduct(productid);
+                Long id = Long.parseLong(warehouseid);
+                Product product = productdao.findById(productid).get();
+
+                Warehouse warehouse = warehousedao.findById(id).get();
+
+                if ((warehouse.getWarehouseCapacity() - warehouse.getAvailableStock()) < stock)
+                    return "no space available";
+
+                Long updated_stock = product.getWarehouseStock() + stock;
+                Long updated_warehouse_stock = warehouse.getAvailableStock() + stock;
+                product.setWarehouseStock(updated_stock);
+                warehouse.setAvailableStock(updated_warehouse_stock);
+                productdao.save(product);
+                warehousedao.save(warehouse);
+
+                return "done";
+            }
+
         }
-        return "Sufficient space not avilable in " + warehouse.getName() + " warehouse";
+        return "product not available with id ,please add new product with whole description";
     }
 
-    public Product Updateproduct(Order order) {
-
-        List<OrderItems> orderItems = order.getOrderItems();
-
-
-        long total = 0;
-        for (OrderItems item : orderItems) {
-            Product p = restTemplate.getForObject("http://localhost:8080/product/" + item.getProductItemId(), Product.class);
+    public String Updateproduct(Order order) {
+        List<OrderItems> items=order.getOrderItems();
+        List<Warehouse> warehouses = warehousedao.findAll();
+        for(OrderItems item : items) {
+            String id = item.getProductItemId();
+            Product p = restTemplate.getForObject("http://localhost:8080/product/" + id, Product.class);
+            if(p.getAvailQuantity()<item.getQuantity()){
+                return " Ordered quantity not availale remove the item to proceed";
+            }
             double price = (item.getPrice() * (double) item.getQuantity());
-            if (item.getQuantity() <= p.getAvailQuantity()) {
-                p.setAvailQuantity(p.getAvailQuantity() - item.getQuantity());
-                p.setWarehouseStock(p.getWarehouseStock() - item.getQuantity());
-                productdao.save(p);
 
-                List<Warehouse> warehouses = Collections.singletonList(restTemplate.getForObject("http://localhost:8080/AllWarehouse", Warehouse.class));
-                for (Warehouse warehouse : warehouses) {
-                    List<Product> product = warehouse.getProducts();
-                    for (Product product1 : product) {
-                        if (product1.getId() == p.getId()) {
-                            warehouse.setAvailablestock(warehouse.getAvailablestock() - item.getQuantity());
+            p.setAvailQuantity(p.getAvailQuantity() - item.getQuantity());
+            p.setWarehouseStock(p.getWarehouseStock() - item.getQuantity());
+            productdao.save(p);
 
-                            warehousedao.save(warehouse);
-                            break;
-                        }
+            for (Warehouse warehouse : warehouses) {
+                List<Product> product = warehouse.getProducts();
+                for (Product product1 : product) {
+                    if (product1.getId() == p.getId()) {
+                        warehouse.setAvailableStock(warehouse.getAvailableStock() - item.getQuantity());
+                        warehouse.setTotalQuantitySell(warehouse.getTotalQuantitySell()+item.getQuantity());
+
+
+                        warehousedao.save(warehouse);
+
                     }
-
                 }
+
             }
         }
-        return new Product();
+        return "Order done from warehouse side";
+
     }
 
     public String updateprofit(Order order) {
-        List<OrderItems> orderItems = order.getOrderItems();
-        for (OrderItems items : orderItems) {
-            String product_Id = items.getProductItemId();
-            List<Warehouse> warehouses = warehousedao.findAll();
-            for (Warehouse warehouse : warehouses) {
-                List<Product> products = productdao.findAll();
-                for (Product product : products) {
-                    if (product.getId() == product_Id) {
-                        warehouse.setOverall_sell_warehouse(warehouse.getOverall_sell_warehouse() + (items.getPrice() * items.getQuantity()));
-                        warehousedao.save(warehouse);
-                        break;
-                    }
+        List<OrderItems> orderItems=order.getOrderItems();
+        for(OrderItems item : orderItems){
+            String warehouse_id=findwarehousefromproduct(item.getProductItemId());
+            Warehouse warehouse = warehousedao.findById(Long.parseLong(warehouse_id)).get();
+            double items_total_price= item.getQuantity()*item.getPrice();
+            warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+items_total_price);
+            warehousedao.save(warehouse);
+        }
+        return "Sell value updated";
+    }
+
+    public String findwarehousefromproduct(String id){
+        List<Warehouse> warehouses=warehousedao.findAll();
+
+        for(Warehouse warehouse : warehouses) {
+            List<Product> products = warehouse.getProducts();
+            for(Product product : products){
+                String d=product.getId();
+                if(id.equals(d)) {
+                    String warehouse1=Long.toString(warehouse.getWareHouseId());
+                    return warehouse1;
                 }
+
             }
         }
+        return " product not available in any warehouse";
+    }
 
-        return "Sell value updated";
+    public String updateavailablequantity(){
+
+        List<Product> products=productdao.findAll();
+        for(Product product : products){
+            if(product.getAvailQuantity()<1201){
+                product.setAvailQuantity(product.getAvailQuantity()+30);
+                product.setWarehouseStock(product.getWarehouseStock()-30);
+                productdao.save(product);
+            }
+        }
+        return "Stock updated";
     }
 }
 
