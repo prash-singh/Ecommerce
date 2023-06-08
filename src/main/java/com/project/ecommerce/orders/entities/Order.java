@@ -35,5 +35,4 @@ public class Order {
     @JoinColumn(name = "fk_shop_order_id")
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderItems> orderItems;
-
 }

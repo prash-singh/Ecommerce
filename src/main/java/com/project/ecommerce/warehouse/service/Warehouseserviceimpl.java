@@ -1,11 +1,14 @@
 package com.project.ecommerce.warehouse.service;
 
+import com.project.ecommerce.customer.entities.AddressEntities;
 import com.project.ecommerce.orders.controller.OrderController;
 import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.orders.entities.OrderItems;
 import com.project.ecommerce.orders.repository.OrderRepository;
 import com.project.ecommerce.products.entities.Product;
 import com.project.ecommerce.products.repository.ProductRepo;
+import com.project.ecommerce.warehouse.entities.Shipment;
+import com.project.ecommerce.warehouse.repository.Shipmentdao;
 import com.project.ecommerce.warehouse.repository.Warehousedao;
 import com.project.ecommerce.warehouse.entities.Warehouse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +25,13 @@ public class Warehouseserviceimpl implements Warehouseservice {
     @Autowired
     private RestTemplate restTemplate;
 
+
+
     @Autowired
     private ProductRepo productdao;
+
+    @Autowired
+    private Shipmentdao shipmentdao;
 
 
     @Autowired
@@ -91,22 +99,14 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
             p.setAvailQuantity(p.getAvailQuantity() - item.getQuantity());
             p.setWarehouseStock(p.getWarehouseStock() - item.getQuantity());
+            String warehouseid=findwarehousefromproduct(id);
+            Warehouse warehouse= warehousedao.findById(Long.parseLong(warehouseid)).get();
+            warehouse.setTotalQuantitySell(warehouse.getTotalQuantitySell()+item.getQuantity());
+            warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+price);
             productdao.save(p);
-
-            for (Warehouse warehouse : warehouses) {
-                List<Product> product = warehouse.getProducts();
-                for (Product product1 : product) {
-                    if (product1.getId() == p.getId()) {
-                        warehouse.setAvailableStock(warehouse.getAvailableStock() - item.getQuantity());
-                        warehouse.setTotalQuantitySell(warehouse.getTotalQuantitySell()+item.getQuantity());
+            warehousedao.save(warehouse);
 
 
-                        warehousedao.save(warehouse);
-
-                    }
-                }
-
-            }
         }
         return "Order done from warehouse side";
 
@@ -152,6 +152,16 @@ public class Warehouseserviceimpl implements Warehouseservice {
             }
         }
         return "Stock updated";
+    }
+
+    @Override
+    public List<Shipment> getallshipment() {
+        return shipmentdao.findAll();
+    }
+
+    public Order addshipmenttoorder(Order order){
+        return order;
+
     }
 }
 
