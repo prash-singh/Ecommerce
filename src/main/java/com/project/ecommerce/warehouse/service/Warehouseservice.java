@@ -2,6 +2,7 @@ package com.project.ecommerce.warehouse.service;
 
 import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.products.entities.Product;
+import com.project.ecommerce.warehouse.entities.Shipment;
 import com.project.ecommerce.warehouse.entities.Warehouse;
 
 import java.util.List;
@@ -16,15 +17,23 @@ public interface Warehouseservice {
 
     public void deletewarehouseimpl(Long id);
 
-    public String addstockimpl(Long id,Long stock);
+    public String addstockimpl(String productid,Long stock);
 
     //update product
     //update warehouse stock
+    public List<Shipment> getallshipment();
 
-
-    public Product Updateproduct(Order order);
+    public String Updateproduct(Order order);
 
     public String updateprofit(Order order);
+
+    public String findwarehousefromproduct(String id);
+
+    public String updateavailablequantity();
+
+    public Order addshipmenttoorder(Order order);
+
+
 
 
 

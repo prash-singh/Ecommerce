@@ -20,6 +20,7 @@ public class CartItemsServiceImplementation implements CartItemsService{
     private CartItemsRepository cartItemsRepository;
     @Autowired
     private CartRepository cartRepository;
+
     public void deleteById(String userId, String cartId){
         Cart c = this.cartRepository.getUserCart(userId);
         List<CartItems> cartItems = c.getCartItems();
@@ -29,7 +30,19 @@ public class CartItemsServiceImplementation implements CartItemsService{
         this.cartItemsRepository.deleteById(cartId);
     }
 
-    public void updateQty(CartDTO c){
-
+    public void updateQty(String cId, String pId, boolean opr){
+        Cart crt = this.cartRepository.getUserCart(cId);
+        List<CartItems> c = crt.getCartItems();
+        for (CartItems cart: c) {
+            if(cart.getProductId().equals(pId)){
+                if (opr) {
+                    cart.setQuantity(cart.getQuantity()+1);
+                } else {
+                    cart.setQuantity(cart.getQuantity()-1);
+                }
+            }
+        }
+        crt.setCartItems(c);
+        this.cartRepository.save(crt);
     }
 }

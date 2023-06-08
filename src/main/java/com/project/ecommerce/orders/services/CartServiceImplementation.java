@@ -1,17 +1,20 @@
 package com.project.ecommerce.orders.services;
 
+import com.project.ecommerce.Constants;
 import com.project.ecommerce.orders.dto.CartDTO;
 import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.entities.CartItems;
 import com.project.ecommerce.orders.repository.CartItemsRepository;
 import com.project.ecommerce.orders.repository.CartRepository;
 import com.project.ecommerce.products.entities.Product;
+import com.project.ecommerce.products.services.ProductServices;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @Log4j2
@@ -20,8 +23,9 @@ public class CartServiceImplementation implements CartService{
     private CartRepository cartRepository;
     @Autowired
     private CartItemsRepository cartItemsRepository;
+
     @Autowired
-    private RestTemplate restTemplate;
+    private ProductServices productServices;
     public List<Cart> getCart(){
         try {
             return this.cartRepository.findAll();
@@ -39,11 +43,37 @@ public class CartServiceImplementation implements CartService{
         String productId = c.getProductId();
         String userId = c.getCustomerId();
 
-        Product p = restTemplate.getForObject("http://localhost:8080/product/" + productId, Product.class);
-        log.info(p);
+        Product p = this.productServices.getProduct(productId);
+        if(p == null){
+            log.error("Product not Found");
+            return;
+        }
         if(c.getQuantity() > p.getAvailQuantity()){
             log.error("Quantity not available");
+            return;
         }
+
+        // update product quantity if product already exists in cart
+        Cart cart = this.cartRepository.getUserCart(userId);
+        if(cart != null) {
+            List<CartItems> cItems = cart.getCartItems();
+            boolean flag = false;
+            for (CartItems crt : cItems) {
+                if (crt.getProductId().equals(productId)) {
+                    crt.setQuantity(crt.getQuantity() + c.getQuantity());
+                    crt.setPrice(crt.getQuantity() * p.getProductPrice() * 1.0);
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag) {
+                cart.setCartItems(cItems);
+                this.cartRepository.save(cart);
+                return;
+            }
+        }
+
+        // Adding new Items
         long productQty = c.getQuantity();
         CartItems cartItems = new CartItems();
         cartItems.setProductId(productId);
@@ -58,6 +88,11 @@ public class CartServiceImplementation implements CartService{
         }
         cr.getCartItems().add(cartItems);
         this.cartRepository.save(cr);
-        log.info(cartRepository.findAll());
+    }
+
+    public void removeAllItems(String customerId){
+        Cart c =this.cartRepository.getUserCart(customerId);
+        c.setCartItems(new ArrayList<>());
+        this.cartRepository.save(c);
     }
 }
