@@ -9,4 +9,5 @@ public interface CartService {
     public List<Cart> getCart();
     public Cart getByUserId(String userId);
     public void addCart(CartDTO c);
+    public void removeAllItems(String c);
 }

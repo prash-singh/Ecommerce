@@ -1,5 +1,6 @@
 package com.project.ecommerce.orders.controller;
 
+import com.project.ecommerce.Constants;
 import com.project.ecommerce.orders.dto.CartDTO;
 import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.services.CartItemsService;
@@ -7,8 +8,6 @@ import com.project.ecommerce.orders.services.CartService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Log4j2
@@ -18,34 +17,33 @@ public class CartController {
 
     @Autowired
     private CartItemsService cartItemsService;
-    @GetMapping("/cart")
-    public List<Cart> getCart(){
-        return this.cartService.getCart();
-    }
 
-    @GetMapping("/cart/{id}")
+    @GetMapping(Constants.GET_CART_BY_USERID)
     public Cart getCartByUserId(@PathVariable String id){
         return this.cartService.getByUserId(id);
     }
 
-    @PostMapping("/cart")
+    @PostMapping(Constants.ADD_ITEMS_TO_CART)
     public CartDTO addCart(@RequestBody CartDTO a){
         this.cartService.addCart(a);
         return a;
     }
 
-    @PutMapping("/cart")
-    public CartDTO updateQty(@RequestBody CartDTO a, @RequestHeader boolean operationType){
-        this.cartItemsService.updateQty(a);
+    @PutMapping(Constants.UPDATE_CART_QUANTITY)
+    public String updateQty(@RequestHeader String customerId, @RequestHeader String productId, @RequestHeader boolean operationType){
+        this.cartItemsService.updateQty(customerId,productId,operationType);
         log.info(operationType);
-        return a;
+        return "Updated";
     }
 
-    @DeleteMapping("/cart/{userId}/delete/{id}")
-    public String remove(@PathVariable String userId,@PathVariable String id){
-        this.cartItemsService.deleteById(userId,id);
+    @DeleteMapping(Constants.DELETE_CART_ITEM_BY_ID)
+    public String remove(@RequestHeader String customerId,@PathVariable String id){
+        this.cartItemsService.deleteById(customerId,id);
         return "Deleted";
     }
 
-
+    @DeleteMapping(Constants.DELETE_ALL_CART_ITEMS)
+    public void removeAll(@PathVariable("id") String customerId){
+         this.cartService.removeAllItems(customerId);
+    }
 }

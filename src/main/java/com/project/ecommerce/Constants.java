@@ -1,9 +1,10 @@
 package com.project.ecommerce;
 
-
 public class Constants {
 
-    public static final String SHOW_ALL_WAREHOUSE="/allwarehouse";
+    public static String URL = "http://localhost:8080";
+
+    public static final String SHOW_ALL_WAREHOUSE="/AllWarehouse";
 
     public static final String GET_ALL_PRODUCT="/products";
     public static final String GET_ONE_PRODUCT="/product/{id}";
@@ -31,4 +32,16 @@ public class Constants {
     public static final String UPDATE_AVAILABLE_STOCK_FROM_WAREHOUSE_STOCK="/updateavailablequantity";
 
     public static final String GET_PROFIT_SELL_OF_WAREHOUSE="/getprofit/{warehouseId}";
+
+    // Cart
+    public static final String UPDATE_CART_QUANTITY = "/cart/update";
+    public static final String DELETE_CART_ITEM_BY_ID = "/cart/{id}";
+    public static final String ADD_ITEMS_TO_CART = "/cart";
+    public static final String GET_CART_BY_USERID = "/cart/{id}";
+    public static final String DELETE_ALL_CART_ITEMS = "/cart/delete/{id}";
+
+    // Order
+    public static final String GET_ORDER_BY_CUSTOMER_ID = "/orders";
+    public static final String PLACE_NEW_ORDER = "/orders";
+    public static final String RETURN_ORDER = "/orders";
 }

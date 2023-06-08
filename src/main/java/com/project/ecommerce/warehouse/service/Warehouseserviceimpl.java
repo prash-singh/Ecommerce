@@ -23,9 +23,6 @@ public class Warehouseserviceimpl implements Warehouseservice {
     private RestTemplate restTemplate;
 
     @Autowired
-    private OrderController orderController;
-
-    @Autowired
     private ProductRepo productdao;
 
 
