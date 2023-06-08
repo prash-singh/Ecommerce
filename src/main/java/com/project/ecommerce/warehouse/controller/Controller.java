@@ -90,7 +90,7 @@ public class Controller {
     @PutMapping(Constants.UPDATE_PRODUCT_AFTER_ORDER)
     public String Updateproduct(@RequestBody Order order){
 
-        return this.warehouseservice.Updateproduct(order);
+       return this.warehouseservice.Updateproduct(order);
 
     }
 
@@ -106,6 +106,16 @@ public class Controller {
     @PutMapping(Constants.UPDATE_AVAILABLE_STOCK_FROM_WAREHOUSE_STOCK)
     public String updateavailablequantity(){
         return this.warehouseservice.updateavailablequantity();
+    }
+
+    @GetMapping("getallshipment")
+    public List<Shipment> getallshipment(){
+        return this.warehouseservice.getallshipment();
+    }
+
+    @PutMapping("/addshipmenttoorder")
+    public Order addshipmenttoorder(@RequestBody Order order){
+        return this.warehouseservice.addshipmenttoorder(order);
     }
 
 
