@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -87,6 +88,8 @@ public class Warehouseserviceimpl implements Warehouseservice {
     }
 
     public String Updateproduct(Order order) {
+        updateprofit(order);
+        addshipmenttoorder(order);
         List<OrderItems> items=order.getOrderItems();
         List<Warehouse> warehouses = warehousedao.findAll();
         for(OrderItems item : items) {
@@ -159,9 +162,23 @@ public class Warehouseserviceimpl implements Warehouseservice {
         return shipmentdao.findAll();
     }
 
-    public Order addshipmenttoorder(Order order){
-        return order;
-
+    public String addshipmenttoorder(Order order){
+        List<Order> orderlist=new ArrayList<>();
+        orderlist.add(order);
+        AddressEntities addressEntities=order.getShippingAddress();
+        Long postal_code= Long.parseLong(addressEntities.getPostalCode());
+        List<Shipment> shipmentList= shipmentdao.findAll();
+        for(Shipment shipment : shipmentList){
+            if(shipment.getDestinationWarehouseId() == postal_code) {
+                shipment.setOrders(orderlist);
+                shipmentdao.save(shipment);
+                return " order " + order.getId() + " is sent to " + shipment.getDestinationWarehouseId();
+            }
+        }
+        return "please create new shipment with given destination id";
+    }
+    public Shipment addnewshipment(Shipment shipment){
+        return shipmentdao.save(shipment);
     }
 }
 

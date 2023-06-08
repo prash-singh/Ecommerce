@@ -31,9 +31,9 @@ public interface Warehouseservice {
 
     public String updateavailablequantity();
 
-    public Order addshipmenttoorder(Order order);
+    public String addshipmenttoorder(Order order);
 
-
+public Shipment addnewshipment(Shipment shipment);
 
 
 

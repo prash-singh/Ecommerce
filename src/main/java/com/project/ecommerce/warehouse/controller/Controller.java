@@ -108,16 +108,19 @@ public class Controller {
         return this.warehouseservice.updateavailablequantity();
     }
 
-    @GetMapping("getallshipment")
+    @GetMapping(Constants.GET_ALL_SHIPMENT)
     public List<Shipment> getallshipment(){
         return this.warehouseservice.getallshipment();
     }
 
-    @PutMapping("/addshipmenttoorder")
-    public Order addshipmenttoorder(@RequestBody Order order){
+    @PutMapping(Constants.SET_SHIPMENT_TO_ORDER)
+    public String addshipmenttoorder(@RequestBody Order order){
         return this.warehouseservice.addshipmenttoorder(order);
     }
-
+    @PostMapping(Constants.ADD_NEW_SHIPMENT)
+    public Shipment addnewshipment(@RequestBody Shipment shipment){
+        return this.warehouseservice.addnewshipment(shipment);
+    }
 
 
 }
