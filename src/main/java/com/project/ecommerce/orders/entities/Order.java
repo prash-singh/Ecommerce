@@ -1,5 +1,6 @@
 package com.project.ecommerce.orders.entities;
 
+import com.project.ecommerce.customer.entities.AddressEntities;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -21,8 +22,10 @@ public class Order {
     @Column(name = "order_total")
     private double orderTotal;
 
-    @Column(name = "shipping_address")
-    private String shippingAddress;
+    @OneToOne
+    @JoinColumn(name = "shipping_address")
+    private AddressEntities shippingAddress;
+//    private String shippingAddress;
 
     @Column(name = "order_status")
     private boolean orderStatus;
@@ -32,4 +35,5 @@ public class Order {
     @JoinColumn(name = "fk_shop_order_id")
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderItems> orderItems;
+
 }
