@@ -17,53 +17,19 @@ public class CustomerController {
         return this.customerService.addCustomer(customerEntities);
     }
 
-    @GetMapping("/login")
-    public CustomerEntities findAllCustomer(@RequestBody CustomerEntities a) {
-        return a;
+    @PostMapping("/login")
+    public CustomerEntities customerLogin(@RequestBody CustomerEntities customerEntities) throws Exception {
+        try{
+            return this.customerService.loginCustomer(customerEntities);
+        }catch (Exception e){
+            throw e;
+        }
     }
 
-    @GetMapping("/customer")
-    public List<CustomerEntities> findAllCustomer() {
-        return new ArrayList<>();
+    @GetMapping("/customer/{emailId}")
+    public CustomerEntities getCustomer(@PathVariable String emailId) {
+        return this.customerService.getCustomer(emailId);
     }
 
-    @PutMapping("/customer")
-    public List<CustomerEntities> updateCustomer(@RequestBody CustomerEntities a) {
-        return new ArrayList<>();
-    }
-
-    @GetMapping("/customer/{id}")
-    public CustomerEntities findCustomerById(@PathVariable("id") int id) {
-        return new CustomerEntities();
-    }
-
-    @GetMapping("/address/{id}")
-    public CustomerEntities findAddressById(@PathVariable("id") int id) {
-        return new CustomerEntities();
-    }
-
-    @GetMapping("/address")
-    public List<CustomerEntities> findAddress() {
-        return new ArrayList<>();
-    }
-
-    @PutMapping("/address")
-    public List<CustomerEntities> updateAddress(@RequestBody CustomerEntities a) {
-        return new ArrayList<>();
-    }
-
-    @DeleteMapping("/address/{id}")
-    public List<CustomerEntities> deleteAddress(@PathVariable("id") int id) {
-        return new ArrayList<>();
-    }
-
-    @PostMapping("/address")
-    public List<CustomerEntities> addAddress(@RequestBody CustomerEntities a) {
-        return new ArrayList<>();
-    }
-    @DeleteMapping("/address")
-    public List<CustomerEntities> deleteAddress(@RequestBody CustomerEntities a) {
-        return new ArrayList<>();
-    }
 }
 

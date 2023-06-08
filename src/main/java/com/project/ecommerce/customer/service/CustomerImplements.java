@@ -7,29 +7,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 public interface CustomerImplements {
     String addCustomer(CustomerEntities customer);
-
-//    String updateCustomer(CustomerEntity customer);
-//
-//    String deleteCustomer(CustomerEntity customer);
-//
-//    CustomerEntity getCustomer(CustomerEntity customer);
-//
-  //CustomerEntity getCustomerById(CustomerEntity customer);
-//
-//    AddressEntity getAddress(AddressEntity customer);
-//
-//    AddressEntity getAddressById(AddressEntity customer);
-//
-//    AddressEntity updateAddress(AddressEntity customer);
-//
-//    AddressEntity deleteAddress(AddressEntity customer);
-//
-//
-//    List<CustomerEntity> findAll();
-//
-//    void deleteById(String id);
-//
-//    void delete(CustomerEntity customerEntity);
     CustomerEntities getcustomerbyid(String id);
 
+    CustomerEntities getCustomer(String email);
+
+    CustomerEntities loginCustomer(CustomerEntities customer) throws Exception;
 }
