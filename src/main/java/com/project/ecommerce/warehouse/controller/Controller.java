@@ -17,6 +17,7 @@ import com.project.ecommerce.warehouse.repository.Warehousedao;
 import com.project.ecommerce.warehouse.entities.Warehouse;
 import com.project.ecommerce.warehouse.service.Warehouseservice;
 
+import com.project.ecommerce.warehouse.service.Warehouseserviceimpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,9 @@ public class Controller {
     private Shipmentdao shipmentdao;
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private Warehouseserviceimpl warehouseserviceimpl;
 
 
     @Autowired
@@ -90,15 +94,19 @@ public class Controller {
 
     @PutMapping(Constants.ADD_STOCK_OF_PRODUCT)
     public String addStock(@PathVariable String productid ,@PathVariable Long stock) {
-        return this.warehouseservice.addstockimpl(productid,stock);
-    }
 
-    @PutMapping(Constants.UPDATE_PRODUCT_AFTER_ORDER)
-    public String Updateproduct(@RequestBody Order order){
 
-       return this.warehouseservice.Updateproduct(order);
+            return this.warehouseservice.addstockimpl(productid,stock);
+        }
 
-    }
+
+
+        @PutMapping(Constants.UPDATE_PRODUCT_AFTER_ORDER)
+        public String Updateproduct (@RequestBody Order order){
+
+            return this.warehouseservice.Updateproduct(order);
+
+        }
 
     @PutMapping(Constants.UPDATE_PROFIT_OF_WAREHOUSES_AFTER_ORDER)
     public String Updateprofit(@RequestBody Order order){
