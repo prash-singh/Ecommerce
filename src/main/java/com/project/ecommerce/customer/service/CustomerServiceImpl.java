@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,13 +31,13 @@ public  class CustomerServiceImpl implements CustomerImplements {
     }
 
     @Override
-    public CustomerEntities getcustomerbyid(String id) {
-        return null;
+    public CustomerEntities getCustomer(String emailId) {
+        return this.customerRepository.findByEmail(emailId);
     }
 
     @Override
-    public CustomerEntities getCustomer(String emailId) {
-        return this.customerRepository.findByEmail(emailId);
+    public CustomerEntities updateCustomer(CustomerEntities customer) {
+        return this.customerRepository.save(customer);
     }
 
     @Override
@@ -60,7 +59,6 @@ public  class CustomerServiceImpl implements CustomerImplements {
         return customerServiceimpl;
     }
 
-
     public AddressEntities getCustomerAddress(String customerId) throws Exception {
         List<AddressEntities> address = (List<AddressEntities>) customerRepository.findById(customerId).get();
         if (address.isEmpty()) {
@@ -73,28 +71,12 @@ public  class CustomerServiceImpl implements CustomerImplements {
 
     }
 
-//    public List<AddressEntities> getCustomer(String customerId) {
-//
-//        if (customerId != null) {
-//            CustomerEntities customer=customerRepository.findById(customerId).get();
-//            List<AddressEntities> addressEntities= customer.getAddress();
-//            return addressEntities;
-//        }
-//
-//        return new ArrayList<>();
-//    }
-
-
-  public void deleteAddress(@PathVariable String customerId, @PathVariable String addressId) {
-       customerRepository.deleteById(customerId);
-       addressRepository.deleteById(addressId);
-       System.out.println("Address delete Succesfully");
-    }
-public void updateAddress(@PathVariable String customerId){
-        CustomerEntities customerEntities= customerRepository.findById(customerId).get();
-        List<AddressEntities> addressEntities= customerEntities.getAddress();
-
-        System.out.println("Address update Succesfully");
+    @Override
+        public List<CustomerEntities> getAllCustomer(){
+            return customerRepository.findAll();
+        }
 }
-}
+
+
+
 
