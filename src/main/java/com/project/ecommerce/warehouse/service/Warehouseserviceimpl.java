@@ -79,6 +79,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
                 Warehouse warehouse = warehousedao.findById(id).get();
 
+
                 if ((warehouse.getWarehouseCapacity() - warehouse.getAvailableStock()) < stock)
                     return "no space available";
 
@@ -111,6 +112,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
             Warehouse warehouse= warehousedao.findById(Long.parseLong(warehouseid)).get();
             warehouse.setTotalQuantitySell(warehouse.getTotalQuantitySell()+item.getQuantity());
             warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+item.getPrice());
+            warehouse.setAvailableStock(warehouse.getAvailableStock()-item.getQuantity());
             productdao.save(p);
             warehousedao.save(warehouse);
 
