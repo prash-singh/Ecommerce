@@ -1,6 +1,5 @@
 package com.project.ecommerce.orders.dto;
 
-import com.project.ecommerce.customer.entities.AddressEntities;
 import lombok.Data;
 
 @Data

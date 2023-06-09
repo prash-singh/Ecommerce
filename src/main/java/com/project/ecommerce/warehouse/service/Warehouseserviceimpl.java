@@ -186,7 +186,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
                 return "order added to shipment";
             }
             else{
-                //addnewshipmentbyorder(order,postal_code);
+                addnewshipmentbyorder(order,postal_code);
                 return "order added to new shipment";
             }
         }
@@ -209,7 +209,6 @@ public class Warehouseserviceimpl implements Warehouseservice {
     }
     public String getoverallprofit(Long warehouseId){
         Warehouse warehouse= warehousedao.findById(warehouseId).get();
-
         return "The overall sell from " + warehouse.getName() + " is of Rs. "+ warehouse.getOverallSellWarehouse() + " and total quantity sold from " + warehouse.getName() + " is "+ warehouse.getTotalQuantitySell();
     }
 }

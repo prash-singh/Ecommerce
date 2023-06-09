@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1")
 public class CustomerController {
     @Autowired
     private CustomerImplements customerService;

@@ -25,10 +25,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-import static java.rmi.server.LogStream.log;
-
 @RestController
 @Log4j2
+@RequestMapping("/api/v1")
 public class Controller {
     @Autowired
     private Shipmentdao shipmentdao;
