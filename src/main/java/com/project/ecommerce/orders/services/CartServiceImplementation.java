@@ -10,6 +10,9 @@ import com.project.ecommerce.products.entities.Product;
 import com.project.ecommerce.products.services.ProductServices;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
@@ -26,31 +29,23 @@ public class CartServiceImplementation implements CartService{
 
     @Autowired
     private ProductServices productServices;
-    public List<Cart> getCart(){
-        try {
-            return this.cartRepository.findAll();
-        }
-        catch (Exception e){
-            return new ArrayList<>();
-        }
-    }
 
     public Cart getByUserId(String userId){
         return this.cartRepository.getUserCart(userId);
     }
 
-    public void addCart(CartDTO c){
+    public ResponseEntity<String> addCart(CartDTO c){
         String productId = c.getProductId();
         String userId = c.getCustomerId();
 
         Product p = this.productServices.getProduct(productId);
         if(p == null){
             log.error("Product not Found");
-            return;
+            return new ResponseEntity<>("Product not Found", HttpStatus.NO_CONTENT);
         }
         if(c.getQuantity() > p.getAvailQuantity()){
             log.error("Quantity not available");
-            return;
+            return new ResponseEntity<>("Quantity not available please reduce quantity to proceed",HttpStatus.NOT_ACCEPTABLE);
         }
 
         // update product quantity if product already exists in cart
@@ -69,7 +64,7 @@ public class CartServiceImplementation implements CartService{
             if (flag) {
                 cart.setCartItems(cItems);
                 this.cartRepository.save(cart);
-                return;
+                return new ResponseEntity<>("Quantity Updated",HttpStatus.OK);
             }
         }
 
@@ -88,6 +83,7 @@ public class CartServiceImplementation implements CartService{
         }
         cr.getCartItems().add(cartItems);
         this.cartRepository.save(cr);
+        return new ResponseEntity<>("Added to cart", HttpStatus.ACCEPTED);
     }
 
     public void removeAllItems(String customerId){

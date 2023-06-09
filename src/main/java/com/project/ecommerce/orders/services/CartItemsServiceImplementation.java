@@ -1,6 +1,5 @@
 package com.project.ecommerce.orders.services;
 
-import com.project.ecommerce.orders.dto.CartDTO;
 import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.entities.CartItems;
 import com.project.ecommerce.orders.repository.CartItemsRepository;

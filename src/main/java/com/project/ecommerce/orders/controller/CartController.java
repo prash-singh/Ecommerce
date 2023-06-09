@@ -7,10 +7,14 @@ import com.project.ecommerce.orders.services.CartItemsService;
 import com.project.ecommerce.orders.services.CartService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Log4j2
+@RequestMapping("/api/v1")
 public class CartController {
     @Autowired
     private CartService cartService;
@@ -20,13 +24,20 @@ public class CartController {
 
     @GetMapping(Constants.GET_CART_BY_USERID)
     public Cart getCartByUserId(@PathVariable String id){
-        return this.cartService.getByUserId(id);
+        Cart c = this.cartService.getByUserId(id);
+        if(c.getCartItems().isEmpty()){
+            throw new RuntimeException();
+        }
+        return c;
+    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> exception(){
+        return new ResponseEntity<>("Cart is Empty",HttpStatus.OK);
     }
 
     @PostMapping(Constants.ADD_ITEMS_TO_CART)
-    public CartDTO addCart(@RequestBody CartDTO a){
-        this.cartService.addCart(a);
-        return a;
+    public ResponseEntity<String> addCart(@RequestBody CartDTO a){
+        return this.cartService.addCart(a);
     }
 
     @PutMapping(Constants.UPDATE_CART_QUANTITY)

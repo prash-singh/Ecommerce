@@ -34,7 +34,7 @@ public class OrderServiceImplementation implements OrderService{
     private Warehouseservice warehouseservice;
 
     public List<Order> getOrder(String customerId){
-        return this.orderRepository.findOrderByCustomerId(customerId);
+            return this.orderRepository.findOrderByCustomerId(customerId);
     }
     public Order placeOrder(Order o){
         o.getOrderItems().stream().forEach(
@@ -71,6 +71,7 @@ public class OrderServiceImplementation implements OrderService{
         this.orderRepository.save(o);
         this.cartService.removeAllItems(ord.getCustomerId());
         this.warehouseservice.Updateproduct(o);
+        this.warehouseservice.addshipmenttoorder(o);
         log.error(o);
         log.info("Deleted and placed");
         return "Order placed";
