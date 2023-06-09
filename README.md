@@ -3,7 +3,7 @@
 
 
 ## Team Members
-  * Devansh Mittal :Customer
+  * Devansh Mittal:Customer
   * Prashant Singh:Order and Cart
   * Abhishek Baranwal:Product
   * Upender:WareHouse and related API's
