@@ -1,6 +1,9 @@
 package com.project.ecommerce.warehouse.service;
 
 import com.project.ecommerce.customer.entities.AddressEntities;
+import com.project.ecommerce.customer.entities.CustomerEntities;
+import com.project.ecommerce.customer.repository.AddressRepository;
+import com.project.ecommerce.customer.repository.CustomerRepository;
 import com.project.ecommerce.orders.controller.OrderController;
 import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.orders.entities.OrderItems;
@@ -11,10 +14,12 @@ import com.project.ecommerce.warehouse.entities.Shipment;
 import com.project.ecommerce.warehouse.repository.Shipmentdao;
 import com.project.ecommerce.warehouse.repository.Warehousedao;
 import com.project.ecommerce.warehouse.entities.Warehouse;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,6 +29,11 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private AddressRepository addressRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
 
 
@@ -88,21 +98,19 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     public String Updateproduct(Order order) {
         List<OrderItems> items=order.getOrderItems();
-        List<Warehouse> warehouses = warehousedao.findAll();
+        //List<Warehouse> warehouses = warehousedao.findAll();
         for(OrderItems item : items) {
             String id = item.getProductItemId();
             Product p = restTemplate.getForObject("http://localhost:8080/product/" + id, Product.class);
             if(p.getAvailQuantity()<item.getQuantity()){
                 return " Ordered quantity not availale remove the item to proceed";
             }
-            double price = (item.getPrice() * (double) item.getQuantity());
-
             p.setAvailQuantity(p.getAvailQuantity() - item.getQuantity());
             p.setWarehouseStock(p.getWarehouseStock() - item.getQuantity());
             String warehouseid=findwarehousefromproduct(id);
             Warehouse warehouse= warehousedao.findById(Long.parseLong(warehouseid)).get();
             warehouse.setTotalQuantitySell(warehouse.getTotalQuantitySell()+item.getQuantity());
-            warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+price);
+            warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+item.getPrice());
             productdao.save(p);
             warehousedao.save(warehouse);
 
@@ -112,16 +120,17 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     }
 
-    public String updateprofit(Order order) {
+    public String  updateprofit(Order order) {
         List<OrderItems> orderItems=order.getOrderItems();
         for(OrderItems item : orderItems){
             String warehouse_id=findwarehousefromproduct(item.getProductItemId());
             Warehouse warehouse = warehousedao.findById(Long.parseLong(warehouse_id)).get();
-            double items_total_price= item.getQuantity()*item.getPrice();
-            warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+items_total_price);
+            warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+item.getPrice());
             warehousedao.save(warehouse);
+
         }
-        return "Sell value updated";
+
+        return "profit updated";
     }
 
     public String findwarehousefromproduct(String id){
@@ -159,9 +168,47 @@ public class Warehouseserviceimpl implements Warehouseservice {
         return shipmentdao.findAll();
     }
 
-    public Order addshipmenttoorder(Order order){
-        return order;
+    public String addshipmenttoorder(Order order){
+        String Addresid = order.getShippingAddress();
+        AddressEntities addressEntities = addressRepository.findById(Addresid).get();
+        String postal_code = addressEntities.getPostalCode();
+        List<Shipment> shipmentList = shipmentdao.findAll();
+        for (Shipment shipment : shipmentList) {
+            String destination=Long.toString(shipment.getDestinationWarehouseId());
+            if(postal_code.equals(destination)){
 
+                List<Order> orders=shipment.getOrders();
+                orders.add(order);
+                shipment.setOrders(orders);
+                shipmentdao.save(shipment);
+                return "order added to shipment";
+            }
+            else{
+                //addnewshipmentbyorder(order,postal_code);
+                return "order added to new shipment";
+            }
+        }
+        return "no shipment schedule for given destination address";
+
+    }
+    public Shipment addnewshipment(Shipment shipment){
+       return  shipmentdao.save(shipment);
+    }
+
+    public void addnewshipmentbyorder(Order order,String postal_code){
+        Shipment shipment=new Shipment();
+        List<OrderItems> items = order.getOrderItems();
+        OrderItems item =items.get(1);
+        String warehouse_id=findwarehousefromproduct(item.getProductItemId());
+        shipment.setDestinationWarehouseId(Long.parseLong(postal_code));
+        shipment.setOriginwareHouseId(Long.parseLong(warehouse_id));
+        shipmentdao.save(shipment);
+
+    }
+    public String getoverallprofit(Long warehouseId){
+        Warehouse warehouse= warehousedao.findById(warehouseId).get();
+
+        return "The overall sell from " + warehouse.getName() + " is of Rs. "+ warehouse.getOverallSellWarehouse() + " and total quantity sold from " + warehouse.getName() + " is "+ warehouse.getTotalQuantitySell();
     }
 }
 
