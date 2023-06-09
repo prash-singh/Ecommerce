@@ -45,4 +45,6 @@ public class Constants {
     public static  final String GET_ALL_SHIPMENT="/getallshipment";
 
     public static final String SET_SHIPMENT_TO_ORDER="/addshipmenttoorder";
+
+    public static final String GET_OVERALL_PROFIT_OF_WAREHOUSE="/account/{warehouseId}";
 }

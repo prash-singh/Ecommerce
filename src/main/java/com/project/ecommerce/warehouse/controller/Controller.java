@@ -3,6 +3,7 @@ package com.project.ecommerce.warehouse.controller;
 import com.project.ecommerce.Constants;
 import com.project.ecommerce.customer.entities.AddressEntities;
 import com.project.ecommerce.customer.entities.CustomerEntities;
+import com.project.ecommerce.customer.repository.AddressRepository;
 import com.project.ecommerce.customer.repository.CustomerRepository;
 import com.project.ecommerce.customer.service.CustomerImplements;
 import com.project.ecommerce.orders.entities.Order;
@@ -11,6 +12,7 @@ import com.project.ecommerce.orders.repository.OrderRepository;
 import com.project.ecommerce.products.entities.Product;
 import com.project.ecommerce.products.repository.ProductRepo;
 import com.project.ecommerce.warehouse.entities.Shipment;
+import com.project.ecommerce.warehouse.repository.Shipmentdao;
 import com.project.ecommerce.warehouse.repository.Warehousedao;
 import com.project.ecommerce.warehouse.entities.Warehouse;
 import com.project.ecommerce.warehouse.service.Warehouseservice;
@@ -27,6 +29,10 @@ import static java.rmi.server.LogStream.log;
 @RestController
 @Log4j2
 public class Controller {
+    @Autowired
+    private Shipmentdao shipmentdao;
+    @Autowired
+    private AddressRepository addressRepository;
 
 
     @Autowired
@@ -96,6 +102,7 @@ public class Controller {
 
     @PutMapping(Constants.UPDATE_PROFIT_OF_WAREHOUSES_AFTER_ORDER)
     public String Updateprofit(@RequestBody Order order){
+
         return this.warehouseservice.updateprofit(order);
     }
 
@@ -114,12 +121,20 @@ public class Controller {
     }
 
     @PutMapping(Constants.SET_SHIPMENT_TO_ORDER)
-    public String addshipmenttoorder(@RequestBody Order order){
+    public String addshipmenttoorder(@RequestBody Order order) {
         return this.warehouseservice.addshipmenttoorder(order);
-    }
+        }
+
+
+
     @PostMapping(Constants.ADD_NEW_SHIPMENT)
     public Shipment addnewshipment(@RequestBody Shipment shipment){
         return this.warehouseservice.addnewshipment(shipment);
+    }
+
+    @GetMapping("/account/{warehouseId}")
+    public String getoverallprofitofwarehouse(@PathVariable Long warehouseId){
+        return this.warehouseservice.getoverallprofit(warehouseId);
     }
 
 

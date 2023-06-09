@@ -35,6 +35,8 @@ public interface Warehouseservice {
 
 public Shipment addnewshipment(Shipment shipment);
 
+public String getoverallprofit(Long warehouseId);
+
 
 
 
