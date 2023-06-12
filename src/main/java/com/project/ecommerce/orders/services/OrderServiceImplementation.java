@@ -8,6 +8,7 @@ import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.orders.entities.OrderItems;
 import com.project.ecommerce.orders.repository.OrderItemsRepository;
 import com.project.ecommerce.orders.repository.OrderRepository;
+import com.project.ecommerce.products.services.ProductServices;
 import com.project.ecommerce.warehouse.service.Warehouseservice;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,10 @@ public class OrderServiceImplementation implements OrderService{
     private CartService cartService;
     @Autowired
     private OrderItemsRepository orderItemsRepository;
-
     @Autowired
     private Warehouseservice warehouseservice;
+    @Autowired
+    private ProductServices productServices;
 
     public List<Order> getOrder(String customerId){
             return this.orderRepository.findOrderByCustomerId(customerId);
@@ -49,7 +51,7 @@ public class OrderServiceImplementation implements OrderService{
         Order o = new Order();
         o.setOrderStatus(true);
         o.setDate((new Timestamp(new Date().getTime())).toString());
-        o.setShippingAddress(ord.getShippingAddress());
+        o.setShippingAddress(ord.getShippingAddressId());
         o.setCustomerId(ord.getCustomerId());
         o.setOrderItems(new ArrayList<>());
         List<CartItems> cartItems = this.cartService.getByUserId(ord.getCustomerId()).getCartItems();
@@ -62,6 +64,9 @@ public class OrderServiceImplementation implements OrderService{
             OrderItems orderItems = new OrderItems();
             total += c.getPrice();
             orderItems.setProductItemId(c.getProductId());
+            if(this.productServices.getProduct(c.getProductId()).getAvailQuantity() < c.getQuantity()){
+                return "Error: Reduce Quantity of product in cart to place order";
+            }
             orderItems.setPrice(c.getPrice());
             orderItems.setQuantity(c.getQuantity());
             o.getOrderItems().add(orderItems);

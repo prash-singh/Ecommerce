@@ -5,10 +5,10 @@ public class Constants {
 
     // Cart
     public static final String UPDATE_CART_QUANTITY = "/cart/update";
-    public static final String DELETE_CART_ITEM_BY_ID = "/cart/{id}";
+    public static final String DELETE_CART_ITEM_BY_ID = "/cart/{cartItemId}";
     public static final String ADD_ITEMS_TO_CART = "/cart";
-    public static final String GET_CART_BY_USERID = "/cart/{id}";
-    public static final String DELETE_ALL_CART_ITEMS = "/cart/delete/{id}";
+    public static final String GET_CART_BY_USERID = "/cart";
+    public static final String DELETE_ALL_CART_ITEMS = "/cart/delete";
 
     // Order
     public static final String GET_ORDER_BY_CUSTOMER_ID = "/orders";
