@@ -102,7 +102,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
         //List<Warehouse> warehouses = warehousedao.findAll();
         for(OrderItems item : items) {
             String id = item.getProductItemId();
-            Product p = restTemplate.getForObject("http://localhost:8080/product/" + id, Product.class);
+            Product p = restTemplate.getForObject("http://localhost:8080/api/v1/product/" + id, Product.class);
             if(p.getAvailQuantity()<item.getQuantity()){
                 return " Ordered quantity not availale remove the item to proceed";
             }

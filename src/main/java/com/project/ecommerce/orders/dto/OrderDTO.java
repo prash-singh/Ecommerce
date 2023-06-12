@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class OrderDTO {
     private String customerId;
-    private String shippingAddress;
+    private String shippingAddressId;
 }

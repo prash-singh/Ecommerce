@@ -1,6 +1,9 @@
 package com.project.ecommerce.orders.services;
 
 import com.project.ecommerce.Constants;
+import com.project.ecommerce.customer.entities.CustomerEntities;
+import com.project.ecommerce.customer.repository.CustomerRepository;
+import com.project.ecommerce.customer.service.CustomerImplements;
 import com.project.ecommerce.orders.dto.CartDTO;
 import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.entities.CartItems;
@@ -18,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -26,23 +30,46 @@ public class CartServiceImplementation implements CartService{
     private CartRepository cartRepository;
     @Autowired
     private CartItemsRepository cartItemsRepository;
-
+    @Autowired
+    private CustomerRepository customerRepository;
     @Autowired
     private ProductServices productServices;
 
     public Cart getByUserId(String userId){
+        if (userId.isEmpty()){
+            return null;
+        }
         return this.cartRepository.getUserCart(userId);
     }
 
     public ResponseEntity<String> addCart(CartDTO c){
+        if(c.getCustomerId().isEmpty()){
+            return new ResponseEntity<>("CustomerId field cannot be Empty", HttpStatus.NOT_ACCEPTABLE);
+        }else if(c.getProductId().isEmpty()){
+            return new ResponseEntity<>("ProductId field cannot be Empty", HttpStatus.NOT_ACCEPTABLE);
+        }else if(c.getQuantity() < 1){
+            return new ResponseEntity<>("Quantity cannot be negative or Zero",HttpStatus.NOT_ACCEPTABLE);
+        }
+
+
         String productId = c.getProductId();
         String userId = c.getCustomerId();
-
+        try {
+            if(this.customerRepository.findById(userId).get() == null){
+                return new ResponseEntity<>("Invalid CustomerId",HttpStatus.OK);
+            }
+        } catch (Exception e){
+            return new ResponseEntity<>("Invalid CustomerId",HttpStatus.NOT_ACCEPTABLE);
+        }
         Product p = this.productServices.getProduct(productId);
         if(p == null){
             log.error("Product not Found");
             return new ResponseEntity<>("Product not Found", HttpStatus.NO_CONTENT);
         }
+        if(p.getAvailQuantity() == 0){
+            return new ResponseEntity<>("This product is not Available",HttpStatus.OK);
+        }
+
         if(c.getQuantity() > p.getAvailQuantity()){
             log.error("Quantity not available");
             return new ResponseEntity<>("Quantity not available please reduce quantity to proceed",HttpStatus.NOT_ACCEPTABLE);
@@ -52,6 +79,17 @@ public class CartServiceImplementation implements CartService{
         Cart cart = this.cartRepository.getUserCart(userId);
         if(cart != null) {
             List<CartItems> cItems = cart.getCartItems();
+            List<CartItems> cItms = cart.getCartItems();
+            if (!cItms.isEmpty()){
+                long qty = cItms.stream().filter( cartItems ->cartItems.getProductId().equals(productId)).collect(Collectors.toList()).get(0).getQuantity();
+                if(p.getAvailQuantity() == 0){
+                    return new ResponseEntity<>("This product is not Available",HttpStatus.OK);
+                }
+                else if(c.getQuantity() + qty > p.getAvailQuantity()){
+                    log.error("Quantity not available");
+                    return new ResponseEntity<>("Quantity not available please reduce quantity to proceed",HttpStatus.NOT_ACCEPTABLE);
+                }
+            }
             boolean flag = false;
             for (CartItems crt : cItems) {
                 if (crt.getProductId().equals(productId)) {
