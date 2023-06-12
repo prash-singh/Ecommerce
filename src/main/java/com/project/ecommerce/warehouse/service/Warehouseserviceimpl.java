@@ -1,10 +1,10 @@
 package com.project.ecommerce.warehouse.service;
 
 import com.project.ecommerce.customer.entities.AddressEntities;
-import com.project.ecommerce.customer.entities.CustomerEntities;
 import com.project.ecommerce.customer.repository.AddressRepository;
 import com.project.ecommerce.customer.repository.CustomerRepository;
-import com.project.ecommerce.orders.controller.OrderController;
+import com.project.ecommerce.exception.SHIPMENTEMPTYEXCEPTION;
+import com.project.ecommerce.exception.WAREHOUSEEMPTYEXCEPTION;
 import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.orders.entities.OrderItems;
 import com.project.ecommerce.orders.repository.OrderRepository;
@@ -14,13 +14,12 @@ import com.project.ecommerce.warehouse.entities.Shipment;
 import com.project.ecommerce.warehouse.repository.Shipmentdao;
 import com.project.ecommerce.warehouse.repository.Warehousedao;
 import com.project.ecommerce.warehouse.entities.Warehouse;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class Warehouseserviceimpl implements Warehouseservice {
@@ -51,18 +50,29 @@ public class Warehouseserviceimpl implements Warehouseservice {
         return warehousedao.save(warehouse);
     }
 
-    public List<Warehouse> getallwarehouseimpl() {
-        return this.warehousedao.findAll();
+    public List<Warehouse> getallwarehouseimpl() throws WAREHOUSEEMPTYEXCEPTION {
+        List<Warehouse> warehouses=warehousedao.findAll();
+        if(warehouses.size()!=0) {return warehouses;}
+        else {throw new WAREHOUSEEMPTYEXCEPTION("warehouse is empty");}
+
     }
 
     public String getquantityimpl(Long id) {
         Warehouse warehouse = warehousedao.findById(id).get();
+        long stock= warehouse.getAvailableStock();
+
         return "The Quantity at " + warehouse.getLocation() + " Warehouse is " + warehouse.getAvailableStock();
 
     }
 
     public void deletewarehouseimpl(Long id) {
-        warehousedao.delete(warehousedao.findById(id).get());
+       Warehouse warehouse= warehousedao.findById(id).get();
+       if(warehouse!=null){
+           warehousedao.delete(warehouse);
+       }
+       else {
+           throw new NoSuchElementException("warehouse not found at id"+id);
+       }
     }
 
     public String addstockimpl(String productid, Long stock)
@@ -166,8 +176,10 @@ public class Warehouseserviceimpl implements Warehouseservice {
     }
 
     @Override
-    public List<Shipment> getallshipment() {
-        return shipmentdao.findAll();
+    public List<Shipment> getallshipment() throws SHIPMENTEMPTYEXCEPTION {
+        List<Shipment> shipmentList=shipmentdao.findAll();
+        if(shipmentList.size()!=0) return shipmentList;
+        else throw new SHIPMENTEMPTYEXCEPTION("NO SHIPMENT SCHEDULE");
     }
 
     public String addshipmenttoorder(Order order){
