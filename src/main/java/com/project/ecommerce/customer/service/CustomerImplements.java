@@ -1,6 +1,7 @@
 package com.project.ecommerce.customer.service;
 
 
+import com.project.ecommerce.customer.entities.AddressEntities;
 import com.project.ecommerce.customer.entities.CustomerEntities;
 
 
@@ -11,5 +12,6 @@ public interface CustomerImplements {
     List<CustomerEntities> getAllCustomer();
     CustomerEntities updateCustomer(CustomerEntities customer);
     CustomerEntities loginCustomer(CustomerEntities customer) throws Exception;
+    List<AddressEntities> getCustomerAddress(String customerId) throws Exception;
 
 }

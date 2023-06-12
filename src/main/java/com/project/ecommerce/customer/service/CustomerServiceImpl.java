@@ -6,13 +6,13 @@ import com.project.ecommerce.customer.repository.AddressRepository;
 import com.project.ecommerce.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 import java.util.List;
 
 @Service
-public  class CustomerServiceImpl implements CustomerImplements {
+public  class  CustomerServiceImpl implements CustomerImplements {
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -32,6 +32,7 @@ public  class CustomerServiceImpl implements CustomerImplements {
 
     @Override
     public CustomerEntities getCustomer(String emailId) {
+
         return this.customerRepository.findByEmail(emailId);
     }
 
@@ -59,15 +60,20 @@ public  class CustomerServiceImpl implements CustomerImplements {
         return customerServiceimpl;
     }
 
-    public AddressEntities getCustomerAddress(String customerId) throws Exception {
-        List<AddressEntities> address = (List<AddressEntities>) customerRepository.findById(customerId).get();
-        if (address.isEmpty()) {
-            throw new Exception("Customer not found");
+    public List<AddressEntities> getCustomerAddress(String customerId) throws Exception {
+        List<CustomerEntities> result = customerRepository.findAllByCustomerId(customerId);
+        if(result.size()>0){
+            List<AddressEntities> address = result.get(0).getAddress();
+            if (address == null) {
+                throw new Exception("Address of the customer not found");
+            }
+            return address;
         }
-        if (address == null) {
-            throw new Exception("Address of the customer not found");
+        else{
+
+            return null;
         }
-        return address.get(0);
+
 
     }
 
