@@ -2,6 +2,9 @@ package com.project.ecommerce.customer.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.Date;
+
 @Entity
 @Data
 @Table(name="address")
@@ -13,6 +16,7 @@ public class AddressEntities {
     private String addressId;
 
     @Column(name="address_Line")
+
     private String addressLine;
 
     @Column(name="City")
@@ -29,4 +33,6 @@ public class AddressEntities {
 
     @Column(name="Country")
     private String country;
+
+     
 }

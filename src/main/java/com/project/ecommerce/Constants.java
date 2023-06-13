@@ -15,7 +15,10 @@ public class Constants {
     public static final String PLACE_NEW_ORDER = "/orders";
     public static final String RETURN_ORDER = "/orders";
 
+
+
     public static final String SHOW_ALL_WAREHOUSE="/allwarehouse";
+
 
     public static final String GET_ALL_PRODUCT="/products";
     public static final String GET_ONE_PRODUCT="/product/{id}";
@@ -31,6 +34,7 @@ public class Constants {
 
     public static final String GET_ALL_CATOGERYES="/allcategories";
     public static final String GET_CATOGERY_NAME="/category/{name}";
+    public static final String SHOW_ALL_WAREHOUSE="/allwarehouse";
 
     public static final String ADD_NEW_WAREHOUSE="/addnewwarehouse";
     public static final String GET_TOTAL_STOCK_OF_WAREHOUSE_BY_ID="/getquantity/{wareHouseId}";
