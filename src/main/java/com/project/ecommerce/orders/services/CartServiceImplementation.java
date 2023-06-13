@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -44,11 +45,11 @@ public class CartServiceImplementation implements CartService{
 
     public ResponseEntity<String> addCart(CartDTO c){
         if(c.getCustomerId().isEmpty()){
-            return new ResponseEntity<>("CustomerId field cannot be Empty", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("CustomerId field cannot be Empty", HttpStatus.OK);
         }else if(c.getProductId().isEmpty()){
-            return new ResponseEntity<>("ProductId field cannot be Empty", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("ProductId field cannot be Empty", HttpStatus.OK);
         }else if(c.getQuantity() < 1){
-            return new ResponseEntity<>("Quantity cannot be negative or Zero",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Quantity cannot be negative or Zero",HttpStatus.OK);
         }
 
 
@@ -59,7 +60,7 @@ public class CartServiceImplementation implements CartService{
                 return new ResponseEntity<>("Invalid CustomerId",HttpStatus.OK);
             }
         } catch (Exception e){
-            return new ResponseEntity<>("Invalid CustomerId",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Invalid CustomerId",HttpStatus.OK);
         }
         Product p = this.productServices.getProduct(productId);
         if(p == null){
@@ -72,7 +73,7 @@ public class CartServiceImplementation implements CartService{
 
         if(c.getQuantity() > p.getAvailQuantity()){
             log.error("Quantity not available");
-            return new ResponseEntity<>("Quantity not available please reduce quantity to proceed",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Quantity not available please reduce quantity to proceed",HttpStatus.OK);
         }
 
         // update product quantity if product already exists in cart
@@ -80,14 +81,34 @@ public class CartServiceImplementation implements CartService{
         if(cart != null) {
             List<CartItems> cItems = cart.getCartItems();
             List<CartItems> cItms = cart.getCartItems();
+            long qty = 0;
             if (!cItms.isEmpty()){
-                long qty = cItms.stream().filter( cartItems ->cartItems.getProductId().equals(productId)).collect(Collectors.toList()).get(0).getQuantity();
+                try {
+                    qty = cItms.stream().filter(cartItems -> cartItems.getProductId().equals(productId)).collect(Collectors.toList()).get(0).getQuantity();
+                }catch (Exception ignored){
+                    // Adding new Items
+                    long productQty = c.getQuantity();
+                    CartItems cartItems = new CartItems();
+                    cartItems.setProductId(productId);
+                    cartItems.setQuantity(productQty);
+                    cartItems.setPrice(productQty*p.getProductPrice()*1.0);
+                    this.cartItemsRepository.save(cartItems);
+                    Cart cr = this.cartRepository.getUserCart(userId);
+                    if(cr == null){
+                        cr = new Cart();
+                        cr.setCustomerId(userId);
+                        cr.setCartItems(new ArrayList<>());
+                    }
+                    cr.getCartItems().add(cartItems);
+                    this.cartRepository.save(cr);
+                    return new ResponseEntity<>("Added to cart", HttpStatus.ACCEPTED);
+                }
                 if(p.getAvailQuantity() == 0){
                     return new ResponseEntity<>("This product is not Available",HttpStatus.OK);
                 }
                 else if(c.getQuantity() + qty > p.getAvailQuantity()){
                     log.error("Quantity not available");
-                    return new ResponseEntity<>("Quantity not available please reduce quantity to proceed",HttpStatus.NOT_ACCEPTABLE);
+                    return new ResponseEntity<>("Quantity not available please reduce quantity to proceed",HttpStatus.OK);
                 }
             }
             boolean flag = false;
@@ -105,28 +126,16 @@ public class CartServiceImplementation implements CartService{
                 return new ResponseEntity<>("Quantity Updated",HttpStatus.OK);
             }
         }
-
-        // Adding new Items
-        long productQty = c.getQuantity();
-        CartItems cartItems = new CartItems();
-        cartItems.setProductId(productId);
-        cartItems.setQuantity(productQty);
-        cartItems.setPrice(productQty*p.getProductPrice()*1.0);
-        this.cartItemsRepository.save(cartItems);
-        Cart cr = this.cartRepository.getUserCart(userId);
-        if(cr == null){
-            cr = new Cart();
-            cr.setCustomerId(userId);
-            cr.setCartItems(new ArrayList<>());
-        }
-        cr.getCartItems().add(cartItems);
-        this.cartRepository.save(cr);
-        return new ResponseEntity<>("Added to cart", HttpStatus.ACCEPTED);
+        return new ResponseEntity<>("",HttpStatus.OK);
     }
 
-    public void removeAllItems(String customerId){
+    public ResponseEntity<String> removeAllItems(String customerId){
         Cart c =this.cartRepository.getUserCart(customerId);
+        if(c.getCartItems().isEmpty()){
+            return new ResponseEntity("No item found",HttpStatus.NOT_FOUND);
+        }
         c.setCartItems(new ArrayList<>());
         this.cartRepository.save(c);
+        return new ResponseEntity<>("All Items Removed",HttpStatus.OK);
     }
 }
