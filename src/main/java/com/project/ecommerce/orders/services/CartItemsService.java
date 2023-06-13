@@ -1,7 +1,9 @@
 package com.project.ecommerce.orders.services;
 
-public interface CartItemsService {
-    public void deleteById(String userId, String id);
+import org.springframework.http.ResponseEntity;
 
-    public void updateQty(String cId,String pId, boolean opr);
+public interface CartItemsService {
+    public ResponseEntity<Object> deleteById(String userId, String id);
+
+    public ResponseEntity<String> updateQty(String cId,String pId, boolean opr);
 }

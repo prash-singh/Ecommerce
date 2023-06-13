@@ -6,14 +6,13 @@ import com.project.ecommerce.customer.repository.AddressRepository;
 import com.project.ecommerce.customer.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Service
-public  class CustomerServiceImpl implements CustomerImplements {
+public  class  CustomerServiceImpl implements CustomerImplements {
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -32,13 +31,14 @@ public  class CustomerServiceImpl implements CustomerImplements {
     }
 
     @Override
-    public CustomerEntities getcustomerbyid(String id) {
-        return null;
+    public CustomerEntities getCustomer(String emailId) {
+
+        return this.customerRepository.findByEmail(emailId);
     }
 
     @Override
-    public CustomerEntities getCustomer(String emailId) {
-        return this.customerRepository.findByEmail(emailId);
+    public CustomerEntities updateCustomer(CustomerEntities customer) {
+        return this.customerRepository.save(customer);
     }
 
     @Override
@@ -60,41 +60,29 @@ public  class CustomerServiceImpl implements CustomerImplements {
         return customerServiceimpl;
     }
 
+    public List<AddressEntities> getCustomerAddress(String customerId) throws Exception {
+        List<CustomerEntities> result = customerRepository.findAllByCustomerId(customerId);
+        if(result.size()>0){
+            List<AddressEntities> address = result.get(0).getAddress();
+            if (address == null) {
+                throw new Exception("Address of the customer not found");
+            }
+            return address;
+        }
+        else{
 
-    public AddressEntities getCustomerAddress(String customerId) throws Exception {
-        List<AddressEntities> address = (List<AddressEntities>) customerRepository.findById(customerId).get();
-        if (address.isEmpty()) {
-            throw new Exception("Customer not found");
+            return null;
         }
-        if (address == null) {
-            throw new Exception("Address of the customer not found");
-        }
-        return address.get(0);
+
 
     }
 
-//    public List<AddressEntities> getCustomer(String customerId) {
-//
-//        if (customerId != null) {
-//            CustomerEntities customer=customerRepository.findById(customerId).get();
-//            List<AddressEntities> addressEntities= customer.getAddress();
-//            return addressEntities;
-//        }
-//
-//        return new ArrayList<>();
-//    }
-
-
-  public void deleteAddress(@PathVariable String customerId, @PathVariable String addressId) {
-       customerRepository.deleteById(customerId);
-       addressRepository.deleteById(addressId);
-       System.out.println("Address delete Succesfully");
-    }
-public void updateAddress(@PathVariable String customerId){
-        CustomerEntities customerEntities= customerRepository.findById(customerId).get();
-        List<AddressEntities> addressEntities= customerEntities.getAddress();
-
-        System.out.println("Address update Succesfully");
+    @Override
+        public List<CustomerEntities> getAllCustomer(){
+            return customerRepository.findAll();
+        }
 }
-}
+
+
+
 

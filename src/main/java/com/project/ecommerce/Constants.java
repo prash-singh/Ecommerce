@@ -2,11 +2,13 @@ package com.project.ecommerce;
 
 
 public class Constants {
+
+    // Cart
     public static final String UPDATE_CART_QUANTITY = "/cart/update";
-    public static final String DELETE_CART_ITEM_BY_ID = "/cart/{id}";
+    public static final String DELETE_CART_ITEM_BY_ID = "/cart/{cartItemId}";
     public static final String ADD_ITEMS_TO_CART = "/cart";
-    public static final String GET_CART_BY_USERID = "/cart/{id}";
-    public static final String DELETE_ALL_CART_ITEMS = "/cart/delete/{id}";
+    public static final String GET_CART_BY_USERID = "/cart";
+    public static final String DELETE_ALL_CART_ITEMS = "/cart/delete";
 
     // Order
     public static final String GET_ORDER_BY_CUSTOMER_ID = "/orders";
@@ -14,9 +16,13 @@ public class Constants {
     public static final String RETURN_ORDER = "/orders";
 
 
+
+    public static final String SHOW_ALL_WAREHOUSE="/allwarehouse";
+
+
     public static final String GET_ALL_PRODUCT="/products";
     public static final String GET_ONE_PRODUCT="/product/{id}";
-    public static final String ADD_PRODUCT="/product/";
+    public static final String ADD_PRODUCT="/product/{warehouseId}";
     public static final String UPDATE_PRODUCT="/product/{id}";
 
     public static final String DELETE_PRODUCT="/product/{id}";
@@ -24,7 +30,7 @@ public class Constants {
 
 
 
-    public static final String GET_PRODUCT_NAME="/product/products/productss/{name}";
+    public static final String GET_PRODUCT_NAME="/product/products/{name}";
 
     public static final String GET_ALL_CATOGERYES="/allcategories";
     public static final String GET_CATOGERY_NAME="/category/{name}";
@@ -48,4 +54,17 @@ public class Constants {
     public static final String SET_SHIPMENT_TO_ORDER="/addshipmenttoorder";
 
     public static final String GET_OVERALL_PROFIT_OF_WAREHOUSE="/account/{warehouseId}";
+    public static final String SIGN_UP_BY_CUSTOMER="/signup";
+    public static final String SIGN_IN_BY_CUSTOMER ="/signin";
+
+    public static final String  GET_CUSTOMER_BY_EmailID="/customer/{emailId}";
+
+    public static final String GET_ALL_CUSTOMER ="/customer";
+
+    public static final String UPDATE_CUSTOMER_DETAILS="customerDetails";
+
+
+
+
+
 }
