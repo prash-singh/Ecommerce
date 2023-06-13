@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.project.ecommerce.products.entities.Product;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -34,15 +35,21 @@ public class ProductController {
     }
 
     @GetMapping(Constants.GET_ONE_PRODUCT)
-    public Product getProduct(@PathVariable String  id){
-        return this.productservices.getProduct(id);
-    }
-    @GetMapping("/productPage/{pageNp}")
 
-//    public List<Product> getProductByPage(@PathVariable int pageNo){
-//        return this.productservices.getProductByPage(pageNo);
-//
-//    }
+    public ResponseEntity<Object> getProduct(@PathVariable String  id) throws NoSuchElementException {
+
+        Product product =this.productservices.getProduct(id);
+        if(product == null ){
+            return new ResponseEntity<>("Product not found",HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(product,HttpStatus.OK);
+    }
+    @GetMapping("/productPage/{pageNo}")
+
+    public List<Product> getProductByPage(@PathVariable int pageNo){
+        return this.productservices.getProductByPage(pageNo);
+
+    }
     @PostMapping(Constants.ADD_PRODUCT)
     public String addProduct(@RequestBody Product product, @PathVariable Long warehouseId){
 
@@ -57,8 +64,10 @@ public class ProductController {
         return this.productservices.deleteProduct(id);
     }
     @GetMapping(Constants.GET_PRODUCT_NAME)
-    public Product getProductName(@PathVariable String name){
-        return this.productservices.getProductName(name);
+    public List<Product> getProductName(@PathVariable String name){
+        List<Product> pd =  this.productservices.getProductName(name);
+       return pd;
+
     }
 
 
