@@ -33,13 +33,12 @@ public class CartController {
     @GetMapping(Constants.GET_CART_BY_USERID)
     public ResponseEntity<Object> getCartByUserId(@RequestHeader String customerId){
         Cart cart = this.cartService.getByUserId(customerId);
-        CustomerEntities customerEntities= this.customerRepository.findById(customerId).get();
-        if( customerEntities== null){
-            log.error(customerEntities);
+        try{this.customerRepository.findById(customerId).get();}catch(Exception e){
+            log.info("Customer not found");
             return new ResponseEntity<>("Invalid CustomerId", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if(cart.getCartItems().isEmpty() || cart==null){
+        if(cart==null || cart.getCartItems().isEmpty()){
             return new ResponseEntity<>("Cart is Empty",HttpStatus.OK);
         }
         return new ResponseEntity<>(cart,HttpStatus.OK);
