@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 @Service
-public class ProductServicesImp implements ProductServices{
+public class ProductServicesImp implements ProductServices {
 
 
     @Autowired
@@ -26,64 +26,75 @@ public class ProductServicesImp implements ProductServices{
     private Warehousedao warehousedao;
 
 
-
     @Override
-    public List<Product> getProducts(){
+    public List<Product> getProducts() {
         return productRepo.findAll();
     }
 
     @Override
-    public Product getProduct(String  id) {
-        return productRepo.findById(id).get();
+    public Product getProduct(String id) {
+         Product pr= productRepo.findById(id).get();
+        if(pr!=null) return pr;
+        else throw new NoSuchElementException("product not available with id");
+
     }
 
     @Override
     public String addProduct(Product product, Long wareHouseID) {
-        Warehouse warehouse=warehousedao.findById(wareHouseID).get();
-        if(warehouse !=null) {
-          List<Product> products=warehouse.getProducts();
-          products.add(product);
-          warehouse.setProducts(products);
-          warehousedao.save(warehouse);
-          productRepo.save(product);
-          return "product added";
+        Warehouse warehouse = warehousedao.findById(wareHouseID).get();
+        if (warehouse != null) {
+            List<Product> products = warehouse.getProducts();
+            products.add(product);
+            warehouse.setProducts(products);
+            warehousedao.save(warehouse);
+            productRepo.save(product);
+            return "product added";
         }
         return "warehouse not exist";
     }
 
-    public String updateProduct(String  id) {
-        Product p= productRepo.findById(id).get();
+    public String updateProduct(String id) {
+        Product p = productRepo.findById(id).get();
 
 
-        if(p != null){
-             p.setSize("XXL");
-             p.setName("Lui");
+        if (p != null) {
+            p.setSize("XXL");
+            p.setName("Lui");
             productRepo.save(p);
-            return  "UPDATED";
-        }
-        else{
+            return "UPDATED";
+        } else {
             return "Check for given ID";
         }
-
 
 
     }
 
     @Override
-    public Product deleteProduct(String  id) {
+    public Product deleteProduct(String id) {
         Product product = productRepo.findById(id).get();
         productRepo.deleteById(id);
         return product;
     }
 
     @Override
-    public Product getProductName(String name) {
-        return  productRepo.findByName(name);
+    public List<Product> getProductName(String name) {
+        List<Product> products=productRepo.findByName(name);
+        //Product product = productRepo.findByName(name);
+        if(products.size()>0) {
+            return products;
+        }
+        else throw new NoSuchElementException("product with this name not found");
+
     }
 
-   @Override
-   public List<ProductCatogery> getCatogeryType(String name) {
-        return (List<ProductCatogery>) this.catogeryRepo.findByNames(name);
+    @Override
+    public List<ProductCatogery> getCatogeryType(String name) {
+        List lis = this.catogeryRepo.findByNames(name);
+        if(lis.isEmpty()){
+            throw new NoSuchElementException("Catogery Type not Present");
+        }
+
+        return (List<ProductCatogery>) lis;
     }
 
     @Override
@@ -91,15 +102,18 @@ public class ProductServicesImp implements ProductServices{
         return catogeryRepo.findAll();
     }
 
-//    @Override
-//    public List<Product> getProductByPage(int pageNo) {
-//        int pageSize = 10;
-//        Pageable pg = PageRequest.of(pageNo,pageSize);
-//        return (List<Product>) productRepo.findAll(pg);
-//
+    @Override
+    public List<Product> getProductByPage(int pageNo) {
+        int pageSize = 10;
+        Pageable pg = PageRequest.of(pageNo, pageSize);
+        Page<Product> list = this.productRepo.findAll(pg);
+        List<Product> content= list.getContent();
+        return content;
+
+
 //
 //    }
 
 
+    }
 }
-

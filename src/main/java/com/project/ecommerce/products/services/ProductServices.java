@@ -13,13 +13,13 @@ public interface ProductServices {
     public String addProduct(Product product, Long wareHouseID);
     public String updateProduct(String id);
     public Product deleteProduct(String id);
-    public Product getProductName(String name);
+    public List<Product> getProductName(String name);
 
    public List<ProductCatogery> getCatogeryType(String name);
 
     public List<ProductCatogery> getCatogery();
 
-    //public List<Product> getProductByPage(int pageNo);
+    public List<Product> getProductByPage(int pageNo);
 
 
 }
