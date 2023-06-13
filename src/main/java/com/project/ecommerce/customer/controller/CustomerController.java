@@ -4,6 +4,7 @@ import com.project.ecommerce.Constants;
 import com.project.ecommerce.customer.entities.AddressEntities;
 import com.project.ecommerce.customer.entities.CustomerEntities;
 import com.project.ecommerce.customer.service.CustomerImplements;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +20,14 @@ public class CustomerController {
     private CustomerImplements customerService;
 
     @PostMapping(Constants.SIGN_UP_BY_CUSTOMER)
-    public String addCustomer(@RequestBody CustomerEntities customerEntities) {
+    public String addCustomer(@RequestBody @Valid CustomerEntities customerEntities){
         return this.customerService.addCustomer(customerEntities);
     }
 
     @PostMapping(Constants.SIGN_IN_BY_CUSTOMER)
-    public String customerLogin(@RequestBody CustomerEntities customerEntities) throws Exception {
+    public String customerLogin(@RequestHeader @Valid String emailId,@RequestHeader String password) throws Exception {
         try {
-            this.customerService.loginCustomer(customerEntities);
+            this.customerService.loginCustomer(emailId,password);
             return "Login Successful \n Welcome Back";
 
         } catch (Exception e) {
@@ -43,6 +44,7 @@ public class CustomerController {
         return ResponseEntity.of(Optional.of(list));
 
     }
+
     @GetMapping(Constants.GET_ALL_CUSTOMER)
     public ResponseEntity<List<CustomerEntities>> getCustomer() {
         List<CustomerEntities> list = this.customerService.getAllCustomer();
@@ -53,20 +55,18 @@ public class CustomerController {
     }
 
     @PutMapping(Constants.UPDATE_CUSTOMER_DETAILS)
-    public CustomerEntities updateCustomerDetails(@PathVariable CustomerEntities customerEntities){
+    public CustomerEntities updateCustomerDetails(@RequestBody CustomerEntities customerEntities) {
         return this.customerService.updateCustomer(customerEntities);
     }
-    @GetMapping("/address/{customerId}")
-    public ResponseEntity<?> getCustomerAddress(@PathVariable String customerId) throws Exception {
+
+    @GetMapping(Constants.GET_ADDRESS_BY_CUSTOMERID)
+    public ResponseEntity getCustomerAddress(@PathVariable String customerId) throws Exception {
         List<AddressEntities> list = this.customerService.getCustomerAddress(customerId);
-        if (list==null) {
+        if (list == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.of(Optional.of(list));
-//        return this.customerService.getCustomerAddress(customerId);
     }
-
-
 }
 
 

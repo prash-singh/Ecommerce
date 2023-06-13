@@ -42,9 +42,7 @@ public  class  CustomerServiceImpl implements CustomerImplements {
     }
 
     @Override
-    public CustomerEntities loginCustomer(CustomerEntities customer) throws Exception {
-        String emailId = customer.getEmailId();
-        String password = customer.getPassword();
+    public CustomerEntities loginCustomer(String emailId , String password) throws Exception {
         CustomerEntities customerServiceimpl = customerRepository.findByEmailAndPassword(emailId, password);
         if (customerServiceimpl == null) {
             throw new Exception("Customer not found");
