@@ -1,6 +1,7 @@
 package com.project.ecommerce.customer.controller;
 
 import com.project.ecommerce.Constants;
+import com.project.ecommerce.customer.entities.AddressEntities;
 import com.project.ecommerce.customer.entities.CustomerEntities;
 import com.project.ecommerce.customer.service.CustomerImplements;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class CustomerController {
         try {
             this.customerService.loginCustomer(customerEntities);
             return "Login Successful \n Welcome Back";
+
         } catch (Exception e) {
             return "Incorrect EmailId or Password";
         }
@@ -53,6 +55,15 @@ public class CustomerController {
     @PutMapping(Constants.UPDATE_CUSTOMER_DETAILS)
     public CustomerEntities updateCustomerDetails(@PathVariable CustomerEntities customerEntities){
         return this.customerService.updateCustomer(customerEntities);
+    }
+    @GetMapping("/address/{customerId}")
+    public ResponseEntity<?> getCustomerAddress(@PathVariable String customerId) throws Exception {
+        List<AddressEntities> list = this.customerService.getCustomerAddress(customerId);
+        if (list==null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.of(Optional.of(list));
+//        return this.customerService.getCustomerAddress(customerId);
     }
 
 
