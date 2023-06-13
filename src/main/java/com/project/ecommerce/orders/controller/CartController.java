@@ -35,7 +35,7 @@ public class CartController {
         Cart cart = this.cartService.getByUserId(customerId);
         try{this.customerRepository.findById(customerId).get();}catch(Exception e){
             log.info("Customer not found");
-            return new ResponseEntity<>("Invalid CustomerId", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Invalid CustomerId", HttpStatus.OK);
         }
 
         if(cart==null || cart.getCartItems().isEmpty()){
@@ -61,12 +61,12 @@ public class CartController {
     }
 
     @DeleteMapping(Constants.DELETE_ALL_CART_ITEMS)
-    public void removeAll(@RequestHeader String customerId){
-         this.cartService.removeAllItems(customerId);
+    public ResponseEntity<String> removeAll(@RequestHeader String customerId){
+         return this.cartService.removeAllItems(customerId);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<String> handleTypeMismatch() {
-        return new ResponseEntity<>("Check if all provided value is correct",HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>("Check if all provided value is correct",HttpStatus.OK);
     }
 }
