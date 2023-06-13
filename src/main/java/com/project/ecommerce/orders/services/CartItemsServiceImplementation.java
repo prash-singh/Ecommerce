@@ -4,6 +4,7 @@ import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.entities.CartItems;
 import com.project.ecommerce.orders.repository.CartItemsRepository;
 import com.project.ecommerce.orders.repository.CartRepository;
+import com.project.ecommerce.products.services.ProductServices;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,8 @@ public class CartItemsServiceImplementation implements CartItemsService{
     private CartItemsRepository cartItemsRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private ProductServices productServices;
 
     public ResponseEntity<Object> deleteById(String userId, String cartId){
         if(userId.isEmpty()){
@@ -68,9 +71,11 @@ public class CartItemsServiceImplementation implements CartItemsService{
 
         for (CartItems cart: c) {
             if(cart.getProductId().equals(pId)){
+                if(cart.getQuantity() >= this.productServices.getProduct(pId).getAvailQuantity()){
+                    return new ResponseEntity<>("Quantity not available",HttpStatus.OK);
+                }
                 if (opr) {
                     cart.setQuantity(cart.getQuantity()+1);
-
                 } else {
                     cart.setQuantity(cart.getQuantity()-1);
                 }

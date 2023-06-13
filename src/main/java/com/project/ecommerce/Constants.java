@@ -15,11 +15,6 @@ public class Constants {
     public static final String PLACE_NEW_ORDER = "/orders";
     public static final String RETURN_ORDER = "/orders";
 
-
-
-    public static final String SHOW_ALL_WAREHOUSE="/allwarehouse";
-
-
     public static final String GET_ALL_PRODUCT="/products";
     public static final String GET_ONE_PRODUCT="/product/{id}";
     public static final String ADD_PRODUCT="/product/{warehouseId}";
