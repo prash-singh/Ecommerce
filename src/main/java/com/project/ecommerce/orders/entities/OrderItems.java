@@ -2,7 +2,6 @@ package com.project.ecommerce.orders.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.context.annotation.Bean;
 
 @Entity
 @Data
