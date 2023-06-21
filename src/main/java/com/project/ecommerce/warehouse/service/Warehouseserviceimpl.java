@@ -212,7 +212,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
                 return "order added to shipment";
             }
             else{
-                addnewshipmentbyorder(order,postal_code);
+                addNewShipmentByOrder(order,postal_code);
                 return "order added to new shipment";
             }
         }

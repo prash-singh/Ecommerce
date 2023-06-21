@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 @RequestMapping(Constants.REQUEST_MAPPING)
 @RestController
 @Log4j2
-@RequestMapping("/api/v1")
+
 public class Controller {
 
 

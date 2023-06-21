@@ -33,7 +33,7 @@ public class Constants {
 
     public static final String GET_ALL_CATOGERYES="/allcategories";
     public static final String GET_CATOGERY_NAME="/category/{name}";
-    public static final String SHOW_ALL_WAREHOUSE="/allwarehouse";
+
 
     public static final String ADD_NEW_WAREHOUSE="/addnewwarehouse";
     public static final String GET_TOTAL_STOCK_OF_WAREHOUSE_BY_ID="/getquantity/{wareHouseId}";
