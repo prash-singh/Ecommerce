@@ -11,7 +11,7 @@ public interface CustomerImplements {
     CustomerEntities getCustomer(String email);
     List<CustomerEntities> getAllCustomer();
     CustomerEntities updateCustomer(CustomerEntities customer);
-    CustomerEntities loginCustomer(CustomerEntities customer) throws Exception;
+    CustomerEntities loginCustomer(String emailId,String password) throws Exception;
     List<AddressEntities> getCustomerAddress(String customerId) throws Exception;
 
 }

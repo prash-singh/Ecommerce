@@ -1,6 +1,9 @@
 package com.project.ecommerce.orders.controller;
 
 import com.project.ecommerce.Constants;
+import com.project.ecommerce.customer.entities.CustomerEntities;
+import com.project.ecommerce.customer.repository.CustomerRepository;
+import com.project.ecommerce.customer.service.CustomerImplements;
 import com.project.ecommerce.orders.dto.CartDTO;
 import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.services.CartItemsService;
@@ -24,16 +27,21 @@ public class CartController {
     @Autowired
     private CartItemsService cartItemsService;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     @GetMapping(Constants.GET_CART_BY_USERID)
     public ResponseEntity<Object> getCartByUserId(@RequestHeader String customerId){
-        Cart c = this.cartService.getByUserId(customerId);
-        if(c == null){
-            return new ResponseEntity<>("Invalid userId", HttpStatus.NOT_ACCEPTABLE);
+        Cart cart = this.cartService.getByUserId(customerId);
+        try{this.customerRepository.findById(customerId).get();}catch(Exception e){
+            log.info("Customer not found");
+            return new ResponseEntity<>("Invalid CustomerId", HttpStatus.OK);
         }
-        if(c.getCartItems().isEmpty()){
-            return new ResponseEntity<>("Cart is Empty",HttpStatus.NOT_FOUND);
+
+        if(cart==null || cart.getCartItems().isEmpty()){
+            return new ResponseEntity<>("Cart is Empty",HttpStatus.OK);
         }
-        return new ResponseEntity<>(c,HttpStatus.OK);
+        return new ResponseEntity<>(cart,HttpStatus.OK);
     }
 
 
@@ -48,17 +56,17 @@ public class CartController {
     }
 
     @DeleteMapping(Constants.DELETE_CART_ITEM_BY_ID)
-    public ResponseEntity<Object> remove(@RequestHeader String customerId,@PathVariable String itemId){
-        return this.cartItemsService.deleteById(customerId,itemId);
+    public ResponseEntity<Object> remove(@RequestHeader String customerId,@PathVariable String cartItemId){
+        return this.cartItemsService.deleteById(customerId,cartItemId);
     }
 
     @DeleteMapping(Constants.DELETE_ALL_CART_ITEMS)
-    public void removeAll(@RequestHeader String customerId){
-         this.cartService.removeAllItems(customerId);
+    public ResponseEntity<String> removeAll(@RequestHeader String customerId){
+         return this.cartService.removeAllItems(customerId);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<String> handleTypeMismatch() {
-        return new ResponseEntity<>("Check if all provided value is correct",HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>("Check if all provided value is correct",HttpStatus.OK);
     }
 }
