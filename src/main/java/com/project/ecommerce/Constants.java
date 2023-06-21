@@ -2,6 +2,7 @@ package com.project.ecommerce;
 
 
 public class Constants {
+    public static final String REQUEST_MAPPING= "/api/v1";
     public static final String UPDATE_CART_QUANTITY = "/cart/update";
     public static final String DELETE_CART_ITEM_BY_ID = "/cart/{id}";
     public static final String ADD_ITEMS_TO_CART = "/cart";
@@ -48,4 +49,6 @@ public class Constants {
     public static final String SET_SHIPMENT_TO_ORDER="/addshipmenttoorder";
 
     public static final String GET_OVERALL_PROFIT_OF_WAREHOUSE="/account/{warehouseId}";
+
+    public static final String WAREHOUSE_WITH_MAXIMUM_PROFIT= "/warehousewithmaximumprofit";
 }

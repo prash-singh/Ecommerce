@@ -46,68 +46,82 @@ public class Warehouseserviceimpl implements Warehouseservice {
     @Autowired
     private OrderRepository orderRepository;
 
-    public Warehouse addnewwarehouseimpl(Warehouse warehouse) {
-        return warehousedao.save(warehouse);
+    public Warehouse addNewWarehouseImpl(Warehouse warehouse){
+       return warehousedao.save(warehouse);
     }
 
-    public List<Warehouse> getallwarehouseimpl() throws WAREHOUSEEMPTYEXCEPTION {
+    public List<Warehouse> getAllWarehouseImpl() throws WAREHOUSEEMPTYEXCEPTION {
         List<Warehouse> warehouses=warehousedao.findAll();
         if(warehouses.size()!=0) {return warehouses;}
         else {throw new WAREHOUSEEMPTYEXCEPTION("warehouse is empty");}
 
     }
 
-    public String getquantityimpl(Long id) {
-        Warehouse warehouse = warehousedao.findById(id).get();
-        long stock= warehouse.getAvailableStock();
+    public String getQuantityImpl(Long id) {
+        try{
+            Warehouse warehouse = warehousedao.findById(id).get();
+            long stock= warehouse.getAvailableStock();
+            return "The Quantity at " + warehouse.getLocation() + " Warehouse is " + warehouse.getAvailableStock();
+        }
+        catch (NoSuchElementException exc){
+            throw new NoSuchElementException("warehouse not found at id " + id);
+        }
 
-        return "The Quantity at " + warehouse.getLocation() + " Warehouse is " + warehouse.getAvailableStock();
+      }
+
+    public void deleteWarehouseImpl(Long id) {
+        try {
+            Warehouse warehouse= warehousedao.findById(id).get();
+            warehousedao.delete(warehouse);
+        }catch(NoSuchElementException exc){
+            throw new NoSuchElementException("warehouse not found at id " + id);
+        }
+
 
     }
 
-    public void deletewarehouseimpl(Long id) {
-       Warehouse warehouse= warehousedao.findById(id).get();
-       if(warehouse!=null){
-           warehousedao.delete(warehouse);
-       }
-       else {
-           throw new NoSuchElementException("warehouse not found at id"+id);
-       }
-    }
-
-    public String addstockimpl(String productid, Long stock)
+    public String addStockImpl(String productid, Long stock)
     {
-        List<Product> products = productdao.findAll();
-        for (Product product1 : products)
-        {
-            if (product1.getId().equals(productid))
+        try{
+            Product product2= productdao.findById(productid).get();
+            List<Product> products = productdao.findAll();
+            for (Product product1 : products)
             {
+                if (product1.getId().equals(productid))
+                {
 
-                String warehouseid = findwarehousefromproduct(productid);
-                Long id = Long.parseLong(warehouseid);
-                Product product = productdao.findById(productid).get();
+                    String warehouseid = findWarehouseFromProduct(productid);
+                    Long id = Long.parseLong(warehouseid);
+                    Product product = productdao.findById(productid).get();
 
-                Warehouse warehouse = warehousedao.findById(id).get();
+                    Warehouse warehouse = warehousedao.findById(id).get();
 
 
-                if ((warehouse.getWarehouseCapacity() - warehouse.getAvailableStock()) < stock)
-                    return "no space available";
+                    if ((warehouse.getWarehouseCapacity() - warehouse.getAvailableStock()) < stock)
+                        return "no space available";
 
-                Long updated_stock = product.getWarehouseStock() + stock;
-                Long updated_warehouse_stock = warehouse.getAvailableStock() + stock;
-                product.setWarehouseStock(updated_stock);
-                warehouse.setAvailableStock(updated_warehouse_stock);
-                productdao.save(product);
-                warehousedao.save(warehouse);
+                    Long updated_stock = product.getWarehouseStock() + stock;
+                    Long updated_warehouse_stock = warehouse.getAvailableStock() + stock;
+                    product.setWarehouseStock(updated_stock);
+                    warehouse.setAvailableStock(updated_warehouse_stock);
+                    productdao.save(product);
+                    warehousedao.save(warehouse);
 
-                return "done";
+                    return "done";
+                }
+
             }
 
         }
-        return "product not available with id ,please add new product with whole description";
+        catch (NoSuchElementException exc){
+            throw new NoSuchElementException("product not available with id");
+        }
+
+
+       return null;
     }
 
-    public String Updateproduct(Order order) {
+    public String updateProduct(Order order) {
         List<OrderItems> items=order.getOrderItems();
         //List<Warehouse> warehouses = warehousedao.findAll();
         for(OrderItems item : items) {
@@ -118,7 +132,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
             }
             p.setAvailQuantity(p.getAvailQuantity() - item.getQuantity());
             p.setWarehouseStock(p.getWarehouseStock() - item.getQuantity());
-            String warehouseid=findwarehousefromproduct(id);
+            String warehouseid=findWarehouseFromProduct(id);
             Warehouse warehouse= warehousedao.findById(Long.parseLong(warehouseid)).get();
             warehouse.setTotalQuantitySell(warehouse.getTotalQuantitySell()+item.getQuantity());
             warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+item.getPrice());
@@ -132,10 +146,10 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     }
 
-    public String  updateprofit(Order order) {
+    public String  updateProfit(Order order) {
         List<OrderItems> orderItems=order.getOrderItems();
         for(OrderItems item : orderItems){
-            String warehouse_id=findwarehousefromproduct(item.getProductItemId());
+            String warehouse_id=findWarehouseFromProduct(item.getProductItemId());
             Warehouse warehouse = warehousedao.findById(Long.parseLong(warehouse_id)).get();
             warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+item.getPrice());
             warehousedao.save(warehouse);
@@ -145,7 +159,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
         return "profit updated";
     }
 
-    public String findwarehousefromproduct(String id){
+    public String findWarehouseFromProduct(String id){
         List<Warehouse> warehouses=warehousedao.findAll();
 
         for(Warehouse warehouse : warehouses) {
@@ -162,7 +176,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
         return " product not available in any warehouse";
     }
 
-    public String updateavailablequantity(){
+    public String updateAvailableQuantity(){
 
         List<Product> products=productdao.findAll();
         for(Product product : products){
@@ -176,13 +190,13 @@ public class Warehouseserviceimpl implements Warehouseservice {
     }
 
     @Override
-    public List<Shipment> getallshipment() throws SHIPMENTEMPTYEXCEPTION {
+    public List<Shipment> getAllShipment() throws SHIPMENTEMPTYEXCEPTION {
         List<Shipment> shipmentList=shipmentdao.findAll();
         if(shipmentList.size()!=0) return shipmentList;
         else throw new SHIPMENTEMPTYEXCEPTION("NO SHIPMENT SCHEDULE");
     }
 
-    public String addshipmenttoorder(Order order){
+    public String addShipmentToOrder(Order order){
         String Addresid = order.getShippingAddress();
         AddressEntities addressEntities = addressRepository.findById(Addresid).get();
         String postal_code = addressEntities.getPostalCode();
@@ -205,21 +219,21 @@ public class Warehouseserviceimpl implements Warehouseservice {
         return "no shipment schedule for given destination address";
 
     }
-    public Shipment addnewshipment(Shipment shipment){
+    public Shipment addNewShipment(Shipment shipment){
        return  shipmentdao.save(shipment);
     }
 
-    public void addnewshipmentbyorder(Order order,String postal_code){
+    public void addNewShipmentByOrder(Order order,String postal_code){
         Shipment shipment=new Shipment();
         List<OrderItems> items = order.getOrderItems();
         OrderItems item =items.get(1);
-        String warehouse_id=findwarehousefromproduct(item.getProductItemId());
+        String warehouse_id=findWarehouseFromProduct(item.getProductItemId());
         shipment.setDestinationWarehouseId(Long.parseLong(postal_code));
         shipment.setOriginwareHouseId(Long.parseLong(warehouse_id));
         shipmentdao.save(shipment);
 
     }
-    public String getoverallprofit(Long warehouseId){
+    public String getOverallProfit(Long warehouseId){
         Warehouse warehouse= warehousedao.findById(warehouseId).get();
 
         return "The overall sell from " + warehouse.getName() + " is of Rs. "+ warehouse.getOverallSellWarehouse() + " and total quantity sold from " + warehouse.getName() + " is "+ warehouse.getTotalQuantitySell();

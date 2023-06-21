@@ -10,33 +10,33 @@ import java.util.List;
 
 public interface Warehouseservice {
 
-    public Warehouse addnewwarehouseimpl(Warehouse warehouse);
+    public Warehouse addNewWarehouseImpl(Warehouse warehouse);
 
-    public List<Warehouse> getallwarehouseimpl() throws WAREHOUSEEMPTYEXCEPTION;
+    public List<Warehouse> getAllWarehouseImpl() throws WAREHOUSEEMPTYEXCEPTION;
 
-    public String getquantityimpl(Long id);
+    public String getQuantityImpl(Long id);
 
-    public void deletewarehouseimpl(Long id) ;
+    public void deleteWarehouseImpl(Long id) ;
 
-    public String addstockimpl(String productid,Long stock);
+    public String addStockImpl(String productid,Long stock);
 
     //update product
     //update warehouse stock
-    public List<Shipment> getallshipment() throws SHIPMENTEMPTYEXCEPTION;
+    public List<Shipment> getAllShipment() throws SHIPMENTEMPTYEXCEPTION;
 
-    public String Updateproduct(Order order);
+    public String updateProduct(Order order);
 
-    public String updateprofit(Order order);
+    public String updateProfit(Order order);
 
-    public String findwarehousefromproduct(String id);
+    public String findWarehouseFromProduct(String id);
 
-    public String updateavailablequantity();
+    public String updateAvailableQuantity();
 
-    public String addshipmenttoorder(Order order);
+    public String addShipmentToOrder(Order order);
 
-public Shipment addnewshipment(Shipment shipment);
+public Shipment addNewShipment(Shipment shipment);
 
-public String getoverallprofit(Long warehouseId);
+public String getOverallProfit(Long warehouseId);
 
 
 
