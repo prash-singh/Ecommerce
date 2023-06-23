@@ -1,9 +1,6 @@
 package com.project.ecommerce.orders.services;
 
-import com.project.ecommerce.Constants;
-import com.project.ecommerce.customer.entities.CustomerEntities;
 import com.project.ecommerce.customer.repository.CustomerRepository;
-import com.project.ecommerce.customer.service.CustomerImplements;
 import com.project.ecommerce.orders.dto.CartDTO;
 import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.entities.CartItems;
@@ -14,14 +11,11 @@ import com.project.ecommerce.products.services.ProductServices;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +39,7 @@ public class CartServiceImplementation implements CartService{
 
     public ResponseEntity<String> addCart(CartDTO c){
         if(c.getCustomerId().isEmpty()){
-            return new ResponseEntity<>("CustomerId field cannot be Empty", HttpStatus.OK);
+            return new ResponseEntity<>("CustomerId field cannot be Empty", HttpStatus.NOT_ACCEPTABLE);
         }else if(c.getProductId().isEmpty()){
             return new ResponseEntity<>("ProductId field cannot be Empty", HttpStatus.OK);
         }else if(c.getQuantity() < 1){
@@ -126,10 +120,25 @@ public class CartServiceImplementation implements CartService{
                 return new ResponseEntity<>("Quantity Updated",HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>("",HttpStatus.OK);
+        // Adding new Items
+        long productQty = c.getQuantity();
+        CartItems cartItems = new CartItems();
+        cartItems.setProductId(productId);
+        cartItems.setQuantity(productQty);
+        cartItems.setPrice(productQty*p.getProductPrice()*1.0);
+        this.cartItemsRepository.save(cartItems);
+        Cart cr = this.cartRepository.getUserCart(userId);
+        if(cr == null){
+            cr = new Cart();
+            cr.setCustomerId(userId);
+            cr.setCartItems(new ArrayList<>());
+        }
+        cr.getCartItems().add(cartItems);
+        this.cartRepository.save(cr);
+        return new ResponseEntity<>("Added to cart", HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<String> removeAllItems(String customerId){
+    public ResponseEntity removeAllItems(String customerId){
         Cart c =this.cartRepository.getUserCart(customerId);
         if(c.getCartItems().isEmpty()){
             return new ResponseEntity("No item found",HttpStatus.NOT_FOUND);
