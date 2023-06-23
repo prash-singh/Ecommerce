@@ -7,8 +7,8 @@ public class Constants {
     public static final String UPDATE_CART_QUANTITY = "/cart/update";
     public static final String DELETE_CART_ITEM_BY_ID = "/cart/{id}";
     public static final String ADD_ITEMS_TO_CART = "/cart";
-    public static final String GET_CART_BY_USERID = "/cart/{id}";
-    public static final String DELETE_ALL_CART_ITEMS = "/cart/delete/{id}";
+    public static final String GET_CART_BY_USERID = "/cart";
+    public static final String DELETE_ALL_CART_ITEMS = "/cart/delete";
 
     // Order
     public static final String GET_ORDER_BY_CUSTOMER_ID = "/orders";
@@ -47,7 +47,6 @@ public class Constants {
     public static final String GET_ALL_SHIPMENT = "/getallshipment";
 
     public static final String SET_SHIPMENT_TO_ORDER = "/addshipmenttoorder";
-
     public static final String GET_OVERALL_PROFIT_OF_WAREHOUSE = "/account/{warehouseId}";
     public static final String SIGN_UP_BY_CUSTOMER = "/signup";
     public static final String SIGN_IN_BY_CUSTOMER = "/signin";
