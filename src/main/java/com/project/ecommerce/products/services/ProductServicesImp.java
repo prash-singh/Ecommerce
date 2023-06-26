@@ -3,7 +3,7 @@ import com.project.ecommerce.products.entities.ProductCatogery;
 import com.project.ecommerce.products.repository.CatogeryRepo;
 import com.project.ecommerce.products.repository.ProductRepo;
 import com.project.ecommerce.products.entities.Product;
-import com.project.ecommerce.warehouse.repository.Warehousedao;
+import com.project.ecommerce.warehouse.repository.WarehouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +23,7 @@ public class ProductServicesImp implements ProductServices {
     private CatogeryRepo catogeryRepo;
 
     @Autowired
-    private Warehousedao warehousedao;
+    private WarehouseRepository warehouseRepository;
 
 
     @Override
@@ -41,12 +41,12 @@ public class ProductServicesImp implements ProductServices {
 
     @Override
     public String addProduct(Product product, Long wareHouseID) {
-        Warehouse warehouse = warehousedao.findById(wareHouseID).get();
+        Warehouse warehouse = warehouseRepository.findById(wareHouseID).get();
         if (warehouse != null) {
             List<Product> products = warehouse.getProducts();
             products.add(product);
             warehouse.setProducts(products);
-            warehousedao.save(warehouse);
+            warehouseRepository.save(warehouse);
             productRepo.save(product);
             return "product added";
         }

@@ -11,8 +11,8 @@ import com.project.ecommerce.orders.repository.OrderRepository;
 import com.project.ecommerce.products.entities.Product;
 import com.project.ecommerce.products.repository.ProductRepo;
 import com.project.ecommerce.warehouse.entities.Shipment;
-import com.project.ecommerce.warehouse.repository.Shipmentdao;
-import com.project.ecommerce.warehouse.repository.Warehousedao;
+import com.project.ecommerce.warehouse.repository.ShipmentRepository;
+import com.project.ecommerce.warehouse.repository.WarehouseRepository;
 import com.project.ecommerce.warehouse.entities.Warehouse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 @Service
 public class Warehouseserviceimpl implements Warehouseservice {
     @Autowired
-    private Warehousedao warehousedao;
+    private WarehouseRepository warehouseRepository;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -40,18 +40,18 @@ public class Warehouseserviceimpl implements Warehouseservice {
     private ProductRepo productdao;
 
     @Autowired
-    private Shipmentdao shipmentdao;
+    private ShipmentRepository shipmentRepository;
 
 
     @Autowired
     private OrderRepository orderRepository;
 
     public Warehouse addNewWarehouseImpl(Warehouse warehouse){
-       return warehousedao.save(warehouse);
+       return warehouseRepository.save(warehouse);
     }
 
     public List<Warehouse> getAllWarehouseImpl() throws WAREHOUSEEMPTYEXCEPTION {
-        List<Warehouse> warehouses=warehousedao.findAll();
+        List<Warehouse> warehouses= warehouseRepository.findAll();
         if(warehouses.size()!=0) {return warehouses;}
         else {throw new WAREHOUSEEMPTYEXCEPTION("warehouse is empty");}
 
@@ -59,7 +59,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     public String getQuantityImpl(Long id) {
         try{
-            Warehouse warehouse = warehousedao.findById(id).get();
+            Warehouse warehouse = warehouseRepository.findById(id).get();
             long stock= warehouse.getAvailableStock();
             return "The Quantity at " + warehouse.getLocation() + " Warehouse is " + warehouse.getAvailableStock();
         }
@@ -71,8 +71,8 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     public void deleteWarehouseImpl(Long id) {
         try {
-            Warehouse warehouse= warehousedao.findById(id).get();
-            warehousedao.delete(warehouse);
+            Warehouse warehouse= warehouseRepository.findById(id).get();
+            warehouseRepository.delete(warehouse);
         }catch(NoSuchElementException exc){
             throw new NoSuchElementException("warehouse not found at id " + id);
         }
@@ -94,7 +94,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
                     Long id = Long.parseLong(warehouseid);
                     Product product = productdao.findById(productid).get();
 
-                    Warehouse warehouse = warehousedao.findById(id).get();
+                    Warehouse warehouse = warehouseRepository.findById(id).get();
 
 
                     if ((warehouse.getWarehouseCapacity() - warehouse.getAvailableStock()) < stock)
@@ -105,7 +105,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
                     product.setWarehouseStock(updated_stock);
                     warehouse.setAvailableStock(updated_warehouse_stock);
                     productdao.save(product);
-                    warehousedao.save(warehouse);
+                    warehouseRepository.save(warehouse);
 
                     return "done";
                 }
@@ -133,12 +133,12 @@ public class Warehouseserviceimpl implements Warehouseservice {
             p.setAvailQuantity(p.getAvailQuantity() - item.getQuantity());
             p.setWarehouseStock(p.getWarehouseStock() - item.getQuantity());
             String warehouseid=findWarehouseFromProduct(id);
-            Warehouse warehouse= warehousedao.findById(Long.parseLong(warehouseid)).get();
+            Warehouse warehouse= warehouseRepository.findById(Long.parseLong(warehouseid)).get();
             warehouse.setTotalQuantitySell(warehouse.getTotalQuantitySell()+item.getQuantity());
             warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+item.getPrice());
             warehouse.setAvailableStock(warehouse.getAvailableStock()-item.getQuantity());
             productdao.save(p);
-            warehousedao.save(warehouse);
+            warehouseRepository.save(warehouse);
 
 
         }
@@ -150,9 +150,9 @@ public class Warehouseserviceimpl implements Warehouseservice {
         List<OrderItems> orderItems=order.getOrderItems();
         for(OrderItems item : orderItems){
             String warehouse_id=findWarehouseFromProduct(item.getProductItemId());
-            Warehouse warehouse = warehousedao.findById(Long.parseLong(warehouse_id)).get();
+            Warehouse warehouse = warehouseRepository.findById(Long.parseLong(warehouse_id)).get();
             warehouse.setOverallSellWarehouse(warehouse.getOverallSellWarehouse()+item.getPrice());
-            warehousedao.save(warehouse);
+            warehouseRepository.save(warehouse);
 
         }
 
@@ -160,7 +160,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
     }
 
     public String findWarehouseFromProduct(String id){
-        List<Warehouse> warehouses=warehousedao.findAll();
+        List<Warehouse> warehouses= warehouseRepository.findAll();
 
         for(Warehouse warehouse : warehouses) {
             List<Product> products = warehouse.getProducts();
@@ -191,7 +191,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     @Override
     public List<Shipment> getAllShipment() throws SHIPMENTEMPTYEXCEPTION {
-        List<Shipment> shipmentList=shipmentdao.findAll();
+        List<Shipment> shipmentList= shipmentRepository.findAll();
         if(shipmentList.size()!=0) return shipmentList;
         else throw new SHIPMENTEMPTYEXCEPTION("NO SHIPMENT SCHEDULE");
     }
@@ -200,7 +200,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
         String Addresid = order.getShippingAddress();
         AddressEntities addressEntities = addressRepository.findById(Addresid).get();
         String postal_code = addressEntities.getPostalCode();
-        List<Shipment> shipmentList = shipmentdao.findAll();
+        List<Shipment> shipmentList = shipmentRepository.findAll();
         for (Shipment shipment : shipmentList) {
             String destination=Long.toString(shipment.getDestinationWarehouseId());
             if(postal_code.equals(destination)){
@@ -208,7 +208,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
                 List<Order> orders=shipment.getOrders();
                 orders.add(order);
                 shipment.setOrders(orders);
-                shipmentdao.save(shipment);
+                shipmentRepository.save(shipment);
                 return "order added to shipment";
             }
             else{
@@ -220,7 +220,7 @@ public class Warehouseserviceimpl implements Warehouseservice {
 
     }
     public Shipment addNewShipment(Shipment shipment){
-       return  shipmentdao.save(shipment);
+       return  shipmentRepository.save(shipment);
     }
 
     public void addNewShipmentByOrder(Order order,String postal_code){
@@ -230,11 +230,11 @@ public class Warehouseserviceimpl implements Warehouseservice {
         String warehouse_id=findWarehouseFromProduct(item.getProductItemId());
         shipment.setDestinationWarehouseId(Long.parseLong(postal_code));
         shipment.setOriginwareHouseId(Long.parseLong(warehouse_id));
-        shipmentdao.save(shipment);
+        shipmentRepository.save(shipment);
 
     }
     public String getOverallProfit(Long warehouseId){
-        Warehouse warehouse= warehousedao.findById(warehouseId).get();
+        Warehouse warehouse= warehouseRepository.findById(warehouseId).get();
         return "The overall sell from " + warehouse.getName() + " is of Rs. "+ warehouse.getOverallSellWarehouse() + " and total quantity sold from " + warehouse.getName() + " is "+ warehouse.getTotalQuantitySell();
     }
 }

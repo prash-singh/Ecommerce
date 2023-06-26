@@ -5,7 +5,7 @@ import com.project.ecommerce.exception.WAREHOUSEEMPTYEXCEPTION;
 import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.products.entities.Product;
 import com.project.ecommerce.warehouse.entities.Shipment;
-import com.project.ecommerce.warehouse.repository.Warehousedao;
+import com.project.ecommerce.warehouse.repository.WarehouseRepository;
 import com.project.ecommerce.warehouse.entities.Warehouse;
 import com.project.ecommerce.warehouse.service.Warehouseservice;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class Controller {
     private Warehouseservice warehouseservice;
 
     @Autowired
-    private Warehousedao warehousedao;
+    private WarehouseRepository warehouseRepository;
 
     @PostMapping(Constants.ADD_NEW_WAREHOUSE)
     public Warehouse addNewWarehouse(@RequestBody @Valid Warehouse warehouse) {
@@ -35,13 +35,13 @@ public class Controller {
 
     @GetMapping(Constants.GET_ALL_PRODUCTS_IN_WAREHOUSE)
     public List<Product> getProductsInWarehouse(@PathVariable Long warehouseId) {
-        Warehouse warehouse = warehousedao.findById(warehouseId).get();
+        Warehouse warehouse = warehouseRepository.findById(warehouseId).get();
         return warehouse.getProducts();
     }
     @GetMapping(Constants.GET_PROFIT_SELL_OF_WAREHOUSE)
     public String getProfitFromWarehouse(@PathVariable Long warehouseId){
         try {
-            Warehouse warehouse= warehousedao.findById(warehouseId).get();
+            Warehouse warehouse= warehouseRepository.findById(warehouseId).get();
             return "the overall quantity sell from " + warehouse.getName() + " is " + warehouse.getTotalQuantitySell() + " and Total profit earn is " + warehouse.getOverallSellWarehouse();
         }
         catch(NoSuchElementException exc){
@@ -123,7 +123,7 @@ public class Controller {
 
     @GetMapping(Constants.WAREHOUSE_WITH_MAXIMUM_PROFIT)
     public Warehouse warehouseWithMaximumSellProfit(){
-        return warehousedao.warehousewithmaximumprofit();
+        return warehouseRepository.warehousewithmaximumprofit();
     }
 
 

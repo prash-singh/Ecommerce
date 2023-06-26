@@ -3,8 +3,7 @@ package com.project.ecommerce.products.controller;
 
 import com.project.ecommerce.Constants;
 import com.project.ecommerce.products.services.ProductServices;
-import com.project.ecommerce.warehouse.entities.Warehouse;
-import com.project.ecommerce.warehouse.repository.Warehousedao;
+import com.project.ecommerce.warehouse.repository.WarehouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,7 @@ public class ProductController {
     private ProductServices productservices;
 
     @Autowired
-    private Warehousedao warehousedao;
+    private WarehouseRepository warehouseRepository;
 
     @GetMapping(Constants.GET_ALL_PRODUCT)
     public ResponseEntity<List<Product>> getProducts(){
