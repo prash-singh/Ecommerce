@@ -1,8 +1,6 @@
 package com.project.ecommerce.orders.services;
 
-import com.project.ecommerce.Constants;
 import com.project.ecommerce.orders.dto.OrderDTO;
-import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.entities.CartItems;
 import com.project.ecommerce.orders.entities.Order;
 import com.project.ecommerce.orders.entities.OrderItems;
@@ -12,7 +10,7 @@ import com.project.ecommerce.warehouse.service.Warehouseservice;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
