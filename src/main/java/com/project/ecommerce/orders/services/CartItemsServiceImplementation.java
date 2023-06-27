@@ -27,23 +27,23 @@ public class CartItemsServiceImplementation implements CartItemsService{
 
     public ResponseEntity<Object> deleteById(String userId, String cartId){
         if(userId.isEmpty()){
-            return new ResponseEntity<>("CustomerId cannot Be Empty", HttpStatus.OK);
+            return new ResponseEntity<>("CustomerId cannot Be Empty", HttpStatus.NOT_ACCEPTABLE);
         }
 
         if(cartId.isEmpty()){
-            return new ResponseEntity<>("CartId Cannot be Empty",HttpStatus.OK);
+            return new ResponseEntity<>("CartId Cannot be Empty",HttpStatus.NOT_ACCEPTABLE);
         }
 
         Cart c = this.cartRepository.getUserCart(userId);
 
         if(c == null){
-            return new ResponseEntity<>("Invalid CustomerId",HttpStatus.OK);
+            return new ResponseEntity<>("Invalid CustomerId",HttpStatus.NOT_ACCEPTABLE);
         }
 
         List<CartItems> cartItems = c.getCartItems();
         cartItems = cartItems.stream().filter(cart -> !cart.getId().equals(cartId)).collect(Collectors.toList());
         if(cartItems == null){
-            return new ResponseEntity<>("Invalid CartId",HttpStatus.OK);
+            return new ResponseEntity<>("Invalid CartId",HttpStatus.NOT_ACCEPTABLE);
         }
         c.setCartItems(cartItems);
         this.cartRepository.save(c);
@@ -53,15 +53,15 @@ public class CartItemsServiceImplementation implements CartItemsService{
 
     public ResponseEntity<String> updateQty(String cId, String pId, boolean opr){
         if(cId.isEmpty()){
-            return new ResponseEntity<>("CustomerId cannot be empty",HttpStatus.OK);
+            return new ResponseEntity<>("CustomerId cannot be empty",HttpStatus.NOT_ACCEPTABLE);
         }
 
         if(pId.isEmpty()){
-            return new ResponseEntity<>("ProductId cannot be empty",HttpStatus.OK);
+            return new ResponseEntity<>("ProductId cannot be empty",HttpStatus.NOT_ACCEPTABLE);
         }
         Cart crt = this.cartRepository.getUserCart(cId);
         if(crt == null){
-            return new ResponseEntity<>("Invalid CustomerId",HttpStatus.OK);
+            return new ResponseEntity<>("Invalid CustomerId",HttpStatus.NOT_ACCEPTABLE);
         }
         List<CartItems> c = crt.getCartItems();
         if(c.isEmpty()){
@@ -71,19 +71,22 @@ public class CartItemsServiceImplementation implements CartItemsService{
 
         for (CartItems cart: c) {
             if(cart.getProductId().equals(pId)){
-                if(cart.getQuantity() >= this.productServices.getProduct(pId).getAvailQuantity()){
-                    return new ResponseEntity<>("Quantity not available",HttpStatus.OK);
+                long productAvail = this.productServices.getProduct(pId).getAvailQuantity();
+                if(cart.getQuantity() >= productAvail){
+                    return new ResponseEntity<>("Quantity not available",HttpStatus.NOT_FOUND);
                 }
-                if (opr) {
+                if (opr && (cart.getQuantity()+1 <= productAvail)) {
                     cart.setQuantity(cart.getQuantity()+1);
-                } else {
+                } else if(opr==false && (cart.getQuantity()-1 > 0)) {
                     cart.setQuantity(cart.getQuantity()-1);
+                }else {
+                    return new ResponseEntity<>("Cannot be Negative",HttpStatus.NOT_ACCEPTABLE);
                 }
                 flag = false;
             }
         }
         if(flag){
-            return new ResponseEntity<>("Invalid ProductId",HttpStatus.OK);
+            return new ResponseEntity<>("Invalid ProductId",HttpStatus.NOT_ACCEPTABLE);
         }
         crt.setCartItems(c);
         this.cartRepository.save(crt);

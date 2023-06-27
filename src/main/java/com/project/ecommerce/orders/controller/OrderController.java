@@ -29,12 +29,12 @@ public class OrderController {
     }
     @Valid
     @PostMapping(Constants.PLACE_NEW_ORDER)
-    public String placeNewOrder(@RequestBody OrderDTO ord){
+    public ResponseEntity<Object> placeNewOrder(@RequestBody OrderDTO ord){
         return this.orderService.placeOrder(ord);
     }
     @Valid
     @PutMapping(Constants.RETURN_ORDER)
-    public String returnOrder(@RequestHeader String customerId, @RequestHeader String orderId){
+    public ResponseEntity<Object> returnOrder(@RequestHeader String customerId, @RequestHeader String orderId){
         return this.orderService.returnOrder(customerId,orderId);
     }
 

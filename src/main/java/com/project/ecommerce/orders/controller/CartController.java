@@ -8,6 +8,7 @@ import com.project.ecommerce.orders.dto.CartDTO;
 import com.project.ecommerce.orders.entities.Cart;
 import com.project.ecommerce.orders.services.CartItemsService;
 import com.project.ecommerce.orders.services.CartService;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +47,7 @@ public class CartController {
 
 
     @PostMapping(Constants.ADD_ITEMS_TO_CART)
-    public ResponseEntity<String> addCart(@RequestBody CartDTO cart){
+    public ResponseEntity<String> addCart(@RequestBody @Valid CartDTO cart){
         return this.cartService.addCart(cart);
     }
 
